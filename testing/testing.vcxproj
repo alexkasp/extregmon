@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{A230B590-30F4-4F71-ACE7-39A7B5F5B45C}</ProjectGuid>
-    <RootNamespace>extregmon</RootNamespace>
+    <ProjectGuid>{0BBC375E-DF5F-43CE-AC5A-EA72208C23A4}</ProjectGuid>
+    <RootNamespace>testing</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -69,7 +69,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>D:\distrib\boost_1_64_0;$(IncludePath)</IncludePath>
+    <IncludePath>\boost;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -77,6 +77,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>D:\boost\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AddModuleNamesToAssembly>D:\work\extregmon\extregmon\Debug\MainListen.obj;%(AddModuleNamesToAssembly)</AddModuleNamesToAssembly>
+      <AdditionalDependencies>D:\work\extregmon\extregmon\Debug\MainListen.obj,d:\boost\lib\boost_unit_test_framework-vc140-mt-1_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -92,7 +97,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>D:\distrib\boost_1_64_0\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -113,17 +118,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ICommand.h" />
-    <ClInclude Include="MainListen.h" />
-    <ClInclude Include="Server.h" />
-    <ClInclude Include="testCommand.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="ICommand.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="MainListen.cpp" />
-    <ClCompile Include="Server.cpp" />
-    <ClCompile Include="testCommand.cpp" />
+    <ClCompile Include="..\extregmon\Tests.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
