@@ -40,8 +40,9 @@ int testCommand::RunParse(boost::property_tree::ptree& data)
 // check if line exists on server and find out status of registration
 int testCommand::checkLineStatus(string login, boost::property_tree::ptree& data)
 {
+	string output = getConsoleOutput("/etc/freeswitch/cli_args \'sofia status gateway\'|grep "+login);
 	string msg = "extregTest:";
-	msg+=" not found";
+	msg+=" external::18136325029             sip:410997@sip.zadarma.com        REGED     0.00  0/1     1/1";
 	data.add("checkLineStatus", msg);
 	return 0;
 }

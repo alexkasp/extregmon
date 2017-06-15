@@ -11,5 +11,7 @@ public:
 	virtual ~ICommand();
 	// Parse data and make action
 	virtual int RunParse(boost::property_tree::ptree& data) = 0;
+	// get output from command execution in shell
+	string getConsoleOutput(string command);
 };
 

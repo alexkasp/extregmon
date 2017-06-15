@@ -39,12 +39,15 @@ namespace GUI
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
+            string answer = "";
             string message = "";
             if(!erc.connect(ref message))
             {
                 MessageBox.Show(message);
 
             }
+            if (erc.recvAnswer(ref answer))
+                richTextBox.Document.Blocks.Add(new Paragraph(new Run(answer)));
         }
 
         private void button1_Click(object sender, RoutedEventArgs e)
