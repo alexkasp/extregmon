@@ -13,17 +13,35 @@ testCommand::~testCommand()
 
 
 // ovveride virtual int RunParse(const boost::property_tree::ptree& data) = 0;
-int testCommand::RunParse(const boost::property_tree::ptree& data)
+int testCommand::RunParse(boost::property_tree::ptree& data)
 {
     try
     {
-	std::cout<<"try parse json\n";
-	string msg = data.get<std::string>("test");
-	std::cout << msg << "\n";
+		std::cout<<"try parse json\n";
+		string msg = data.get<std::string>("test","");
+		if(!msg.empty())
+			std::cout << msg << "\n";
+		string command = data.get<std::string>("Command", "");
+		if (!command.empty())
+		{
+			string login = data.get<std::string>("LineStatusLogin", "");
+			checkLineStatus(login,data);
+
+		}
     }
       catch (std::exception &e)
           {
                   std::cout << "Error: " << e.what() << "\n";
                       }
+	return 0;
+}
+
+
+// check if line exists on server and find out status of registration
+int testCommand::checkLineStatus(string login, boost::property_tree::ptree& data)
+{
+	string msg = "extregTest:";
+	msg+=" not found";
+	data.add("checkLineStatus", msg);
 	return 0;
 }

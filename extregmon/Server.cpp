@@ -57,7 +57,11 @@ bool Server::startListen(int port)
 			    std::cout<<"run parse\n";
 			
 			    tc.RunParse(pt);
-			    message = "{\"help\":\"ready for new command\"}";
+				std::ostringstream oss;
+
+				boost::property_tree::json_parser::write_json(oss, pt);
+
+				message = oss.str();
 			    boost::asio::write(socket, boost::asio::buffer(message), ignored_error);
 			}
 			}

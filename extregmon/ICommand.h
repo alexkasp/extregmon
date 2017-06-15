@@ -10,6 +10,6 @@ public:
 	ICommand();
 	virtual ~ICommand();
 	// Parse data and make action
-	virtual int RunParse(const boost::property_tree::ptree& data) = 0;
+	virtual int RunParse(boost::property_tree::ptree& data) = 0;
 };
 
