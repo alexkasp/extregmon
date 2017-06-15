@@ -10,15 +10,19 @@
 
 
     <Grid>
-        <Button x:Name="button" Content="Connect" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>
-        <RichTextBox x:Name="richTextBox" HorizontalAlignment="Left" Height="183" Margin="10,126,0,0" VerticalAlignment="Top" Width="497">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="65"/>
+            <RowDefinition Height="254"/>
+        </Grid.RowDefinitions>
+        <Button x:Name="button" Content="Connect" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="button_Click" Height="20"/>
+        <RichTextBox x:Name="richTextBox" Grid.Row="1">
             <FlowDocument>
                 <Paragraph>
-                    <Run Text="RichTextBox"/>
+                    <Run Text=""/>
                 </Paragraph>
             </FlowDocument>
         </RichTextBox>
-        <Button x:Name="button1" Content="Run" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="432,101,0,0" Click="button1_Click"/>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="10,98,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="417"/>
+        <Button x:Name="button1" Content="Run" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="442,35,0,0" Click="button1_Click" Height="20"/>
+        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="0,35,0,0" Text="" VerticalAlignment="Top" Width="427" IsReadOnly="False"/>
     </Grid>
 </Window>
