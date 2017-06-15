@@ -4,26 +4,21 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GUI"
+        xmlns:views="clr-namespace:GUI.View"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525" Loaded="Window_Loaded">
-    <Window.Resources>
-        <CollectionViewSource x:Key="serverViewModelViewSource" d:DesignSource="{d:DesignInstance {x:Type local:ServerViewModel}, CreateList=True}"/>
-    </Window.Resources>
-    <Window.DataContext>
-        <local:ServerViewModel/>
-    </Window.DataContext>
-    <Grid>
-        <Grid x:Name="grid2" DataContext="{StaticResource serverViewModelViewSource}" HorizontalAlignment="Left" Margin="115,53,0,0" VerticalAlignment="Top">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Label Content="connected Prop:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="0" VerticalAlignment="Center"/>
-            <TextBox x:Name="connectedPropTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="0" Text="{Binding connectedProp, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
-        </Grid>
 
+
+    <Grid>
+        <Button x:Name="button" Content="Connect" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>
+        <RichTextBox x:Name="richTextBox" HorizontalAlignment="Left" Height="183" Margin="10,126,0,0" VerticalAlignment="Top" Width="497">
+            <FlowDocument>
+                <Paragraph>
+                    <Run Text="RichTextBox"/>
+                </Paragraph>
+            </FlowDocument>
+        </RichTextBox>
+        <Button x:Name="button1" Content="Run" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="432,101,0,0" Click="button1_Click"/>
+        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="10,98,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="417"/>
     </Grid>
 </Window>
