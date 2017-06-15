@@ -43,16 +43,16 @@ int testCommand::checkLineStatus(string login, boost::property_tree::ptree& data
 	string output = getConsoleOutput("/etc/freeswitch/cli_args \'sofia status gateway\'|grep "+login);
 	string msg = "extregTest:";
 
-	msg+=" not found";
+/*	msg+=" not found";
 	std::cout<<"checkLine send\n";
 	string checkfield = data.get("checkLineStatus","");
 	if(checkfield.empty())
 	    data.put("checkLineStatus", msg);
 	else
 	    data.add("checkLineStatus", msg);
-
+*/
 	msg+=" external::18136325029             sip:410997@sip.zadarma.com        REGED     0.00  0/1     1/1";
-	data.add("checkLineStatus", msg);
+	data.put("checkLineStatus", msg);
 
 	return 0;
 }

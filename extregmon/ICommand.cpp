@@ -28,7 +28,6 @@ string ICommand::getConsoleOutput(string command)
 	fgets(output, 1024, stream);
 
 	pclose(stream);
-	return 1;
 #endif // __LINUX__
 
 	
