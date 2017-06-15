@@ -42,6 +42,11 @@ int testCommand::checkLineStatus(string login, boost::property_tree::ptree& data
 {
 	string msg = "extregTest:";
 	msg+=" not found";
-	data.add("checkLineStatus", msg);
+	std::cout<<"checkLine send\n";
+	string checkfield = data.get("checkLineStatus","");
+	if(checkfield.empty())
+	    data.put("checkLineStatus", msg);
+	else
+	    data.add("checkLineStatus", msg);
 	return 0;
 }
