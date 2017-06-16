@@ -12,7 +12,7 @@ namespace GUI
     class ExtregClient
     {
         private Socket socket;
-
+        public const int MaxReadBuf = 2048;
         public bool connect(ref string message)
         {
             try
@@ -57,7 +57,7 @@ namespace GUI
         public bool recvAnswer(ref string answer)
         {
             try {
-                byte[] buf = new byte[2048];
+                byte[] buf = new byte[MaxReadBuf];
 
                 int bytesRec = socket.Receive(buf);
                     answer = Encoding.UTF8.GetString(buf, 0, bytesRec);

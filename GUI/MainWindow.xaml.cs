@@ -54,20 +54,35 @@ namespace GUI
         {
             string command = textBox.Text;
             string answer = "";
+            string fullanswer = "";
 
             if(erc.sendCommand(command, ref answer))
             {
-                if(erc.recvAnswer(ref answer))
-                    richTextBox.Document.Blocks.Add(new Paragraph(new Run(answer)));
+                if (erc.recvAnswer(ref answer))
+                {
+                    do
+                    {
+                        fullanswer += answer;
+                       
+                  
+                    } while ((answer.Length == ExtregClient.MaxReadBuf) && (erc.recvAnswer(ref answer)));
+                }
                 else
                 {
 
                     MessageBox.Show(answer);
                 }
+
             }
             else {
                 MessageBox.Show(answer);
             }
+            richTextBox.Document.Blocks.Add(new Paragraph(new Run(fullanswer)));
+        }
+
+        private void button2_Click(object sender, RoutedEventArgs e)
+        {
+            richTextBox.Document.Blocks.Clear();
         }
     }
 }
