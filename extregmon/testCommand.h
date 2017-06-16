@@ -1,5 +1,7 @@
 #pragma once
 #include "ICommand.h"
+#include <vector>
+
 class testCommand :
 	public ICommand
 {
@@ -15,11 +17,11 @@ public:
 	// check if line exists on server and find out status of registration
 	int checkLineStatus(string login, boost::property_tree::ptree& data);
 	// scan log file for log with this line
-	int getLineLog(string login, boost::property_tree::ptree& pt);
+	int getLineLog(string login, std::vector<std::string>& pt);
 	// set position one line back
 	int LineBackLog(std::ifstream& log);
 	// set read ptr to start sip packet
 	int SetPositionToBeginSipHeader(std::ifstream& log, int&sendcounter);
-	int SendSipPacket(std::ifstream& log, int sendcounter, boost::property_tree::ptree& pt);
+	int SendSipPacket(std::ifstream& log, int sendcounter, std::vector<std::string>& pt);
 };
 
