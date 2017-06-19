@@ -62,6 +62,7 @@ bool Server::startListen(int port)
 				boost::property_tree::json_parser::write_json(oss, pt);
 
 				message = oss.str();
+				std::cout<<"PARSE \n"<<message<<"\n";
 			    boost::asio::write(socket, boost::asio::buffer(message), ignored_error);
 			}
 			}
