@@ -7,7 +7,7 @@
         xmlns:views="clr-namespace:GUI.View"
         xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="GUI.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525" Loaded="Window_Loaded">
+        Title="MainWindow" Height="350" Width="687.182" Loaded="Window_Loaded">
 
 
     <Grid>
@@ -21,12 +21,12 @@
             <RowDefinition Height="12.218"/>
         </Grid.RowDefinitions>
         <Button x:Name="button" Content="Connect" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="button_Click" Height="20"/>
-        <Button x:Name="button1" Content="Run" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="442,35,0,0" Click="button1_Click" Height="20" Grid.ColumnSpan="2"/>
-        <ComboBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="0,35,0,0" Text="" VerticalAlignment="Top" Width="427" IsReadOnly="False" IsEditable="True">
-            <System:String>{"Command":"LineStatus","LineStatusLogin":"linelogin"}</System:String>
-            <System:String>{"Command":"GetSipLogs","LineSipLogLogin":"linelogin"}</System:String>
+        <Button x:Name="button1" Content="Run" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="580,37,0,0" Click="button1_Click" Height="20"/>
+        <ComboBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="0,35,0,0" Text="" VerticalAlignment="Top" Width="288" IsReadOnly="False" IsEditable="True">
+            <System:String>{"Command":"LineStatus","LineStatusLogin":"</System:String>
+            <System:String>{"Command":"GetSipLogs","LineSipLogLogin":"</System:String>
         </ComboBox>
-        <Button x:Name="button2" Content="Clear" HorizontalAlignment="Left" Margin="90,10,0,0" VerticalAlignment="Top" Width="75" Click="button2_Click"/>
+        <Button x:Name="button2" Content="Clear" HorizontalAlignment="Left" Margin="580,10,0,0" VerticalAlignment="Top" Width="75" Click="button2_Click"/>
         <RichTextBox x:Name="richTextBox" Grid.Row="1" Grid.ColumnSpan="2">
             <FlowDocument>
                 <Paragraph>
@@ -34,5 +34,21 @@
                 </Paragraph>
             </FlowDocument>
         </RichTextBox>
+        <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="90,10,0,0" VerticalAlignment="Top" Width="178">
+            <System:String>All</System:String>
+            <System:String>212.193.100.96</System:String>
+            <System:String>212.193.100.97</System:String>
+            <System:String>212.193.100.98</System:String>
+            <System:String>212.193.100.65</System:String>
+        </ComboBox>
+        <ComboBox x:Name="comboBox1" HorizontalAlignment="Left" Margin="453,35,0,0" VerticalAlignment="Top" Width="122">
+            <System:String>All</System:String>
+            <System:String>212.193.100.96</System:String>
+            <System:String>212.193.100.97</System:String>
+            <System:String>212.193.100.98</System:String>
+            <System:String>212.193.100.65</System:String>
+        </ComboBox>
+        <TextBox x:Name="textBox1" HorizontalAlignment="Left" Height="23" Margin="293,35,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="155" TextChanged="textBox1_TextChanged"/>
+        <Label x:Name="label" Content="параметр" HorizontalAlignment="Left" Margin="293,9,0,0" VerticalAlignment="Top" Width="155" Height="23"/>
     </Grid>
 </Window>
