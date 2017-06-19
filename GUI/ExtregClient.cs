@@ -13,11 +13,11 @@ namespace GUI
     {
         private Socket socket;
         public const int MaxReadBuf = 2048;
-        public bool connect(ref string message)
+        public bool connect(string servaddr,ref string message)
         {
             try
             {
-                IPAddress ip = IPAddress.Parse("212.193.100.65");
+                IPAddress ip = IPAddress.Parse(servaddr);
                 IPEndPoint ipEndPoint = new IPEndPoint(ip, 7524);
                 socket = new Socket(ip.AddressFamily,SocketType.Stream, ProtocolType.Tcp);
                 socket.Connect(ipEndPoint);
