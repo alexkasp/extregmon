@@ -36,8 +36,10 @@ int testCommand::RunParse(boost::property_tree::ptree& data)
 			string login = data.get<std::string>("LineSipLogLogin","");
 			vector<string> readdata;
 			getLineLog(login,readdata);
+			data.add("log","Start Log");
 			for(auto x = readdata.begin();x!=readdata.end();++x)
 			    data.add("log",(*x));
+			data.add("log","End Log");
 			return 1;
 		    }
 
@@ -54,8 +56,8 @@ int testCommand::RunParse(boost::property_tree::ptree& data)
 // check if line exists on server and find out status of registration
 int testCommand::checkLineStatus(string login, boost::property_tree::ptree& data)
 {
-//	string output = getConsoleOutput("/etc/freeswitch/cli_args \'sofia status gateway\'|grep "+login);
-	string output = getConsoleOutput("cat ./test.out|grep "+login);
+	string output = getConsoleOutput("/etc/freeswitch/cli_args \'sofia status gateway\'|grep "+login);
+//	string output = getConsoleOutput("cat ./test.out|grep "+login);
 	string msg = "extregTest:";
 
 /*	msg+=" not found";
@@ -76,8 +78,8 @@ int testCommand::checkLineStatus(string login, boost::property_tree::ptree& data
 // scan log file for log with this line
 int testCommand::getLineLog(string login, std::vector<std::string>& pt)
 {
-//	ifstream log("/var/log/freeswitch/freeswitch.log");
-	ifstream log("./test.log");
+	ifstream log("/var/log/freeswitch/freeswitch.log");
+//	ifstream log("./test.log");
 	int i = 0;
 	if (log)
 	{
