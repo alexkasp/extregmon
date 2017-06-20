@@ -5,6 +5,9 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <fstream>
 
+#define ASTER_PBX_DETECTED 1
+#define FREESWITCH_PBX_DETECTED 2
+
 Server::Server()
 {
 }
@@ -20,27 +23,42 @@ bool Server::startListen(int port)
 {
 		ICommand* tc = nullptr;
 		tcp::acceptor acceptor(io_main, tcp::endpoint(tcp::v4(), port));
-
+		
+		int commandtype = getCommandType("/var/lib/asterisk/agi-bin/system_variables.php", "pbxtype");
+		if (commandtype == FREESWITCH_PBX_DETECTED)
+		{
+		    tc = new testCommand();
+		    std::cout<<"create freeswitch module\n";
+		}
+		else if (commandtype == ASTER_PBX_DETECTED)
+		{
+		    tc = new asterCommand();
+		    std::cout<<"create aster module\n";
+		}
+		else
+		{
+		    std::cout<<"Unknown module!!! Exit!\n";
+		    exit(0);
+		}
+		std::cout<<"Make Hello str\n";
+		std::string message = tc->SayHello();
+		std::cout<<"hello str = "<<message<<"\n";
 		for (;;)
 		{
 			try
 			{
 				tcp::socket socket(io_main);
+				std::cout<<"Prepare accept\n";
 				acceptor.accept(socket);
 				boost::system::error_code ignored_error;
-
-				int commandtype = getCommandType("/var/lib/asterisk/agi-bin/system_variables.php", "pbxtype");
-				if (commandtype == 1)
-					tc = new testCommand();
-				else if (commandtype == 2)
-					tc = new asterCommand();
-
-				std::string message = tc->SayHello();
+				std::cout<<"send hello\n";
+				
 				boost::asio::write(socket, boost::asio::buffer(message), ignored_error);
-		
-				while(1)
+				
+				std::cout<<"run main loop\n";
+				while(MainLoop(socket, tc))
 				{
-					MainLoop(socket, tc);
+					std::cout<<"MOVE CICLE\n";
 				}
 			}
 			catch (std::exception& e)
@@ -78,9 +96,9 @@ int Server::getCommandType(string filename, string paramname)
 
 		}
 		if (strcmp(value, "aster") == 0)
-			return 1;
+			return ASTER_PBX_DETECTED;
 		else if (strcmp(value, "extreg") == 0)
-			return 2;
+			return FREESWITCH_PBX_DETECTED;
 	}
 	return 0;
 }
