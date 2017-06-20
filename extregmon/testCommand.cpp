@@ -13,67 +13,11 @@ testCommand::~testCommand()
 }
 
 
-// ovveride virtual int RunParse(const boost::property_tree::ptree& data) = 0;
-int testCommand::RunParse(boost::property_tree::ptree& data)
+std::string testCommand::getLineStatusCMD(std::string login)
 {
-    try
-    {
-		std::cout<<"try parse json\n";
-		string msg = data.get<std::string>("test","");
-		if(!msg.empty())
-			std::cout << msg << "\n";
-		string command = data.get<std::string>("Command", "");
-		if (!command.empty())
-		{
-		    if(command.compare("LineStatus")==0)
-		    {
-			string login = data.get<std::string>("LineStatusLogin", "");
-			checkLineStatus(login,data);
-			return 1;
-		    }
-		    if(command.compare("GetSipLogs")==0)
-		    {
-			string login = data.get<std::string>("LineSipLogLogin","");
-			vector<string> readdata;
-			getLineLog(login,readdata);
-			data.add("log","Start Log");
-			for(auto x = readdata.begin();x!=readdata.end();++x)
-			    data.add("log",(*x));
-			data.add("log","End Log");
-			return 1;
-		    }
 
-		}
-    }
-      catch (std::exception &e)
-          {
-                  std::cout << "Error from RunParse: " << e.what() << "\n";
-                      }
-	return 0;
+	return "/etc/freeswitch/cli_args \'sofia status gateway\'|grep " + login;
 }
-
-
-// check if line exists on server and find out status of registration
-int testCommand::checkLineStatus(string login, boost::property_tree::ptree& data)
-{
-	string output = getConsoleOutput("/etc/freeswitch/cli_args \'sofia status gateway\'|grep "+login);
-//	string output = getConsoleOutput("cat ./test.out|grep "+login);
-	string msg = "extregTest:";
-
-/*	msg+=" not found";
-	std::cout<<"checkLine send\n";
-	string checkfield = data.get("checkLineStatus","");
-	if(checkfield.empty())
-	    data.put("checkLineStatus", msg);
-	else
-	    data.add("checkLineStatus", msg);
-*/
-	msg+=output;//" external::18136325029             sip:410997@sip.zadarma.com        REGED     0.00  0/1     1/1";
-	data.put("checkLineStatus", msg);
-
-	return 0;
-}
-
 
 // scan log file for log with this line
 int testCommand::getLineLog(string login, std::vector<std::string>& pt)
@@ -207,4 +151,10 @@ int testCommand::SendSipPacket(std::ifstream& log, int sendcounter, std::vector<
 	if(log.eof())
 	    return 1;
 	return 0;
+}
+
+
+std::string testCommand::SayHello()
+{
+	return "FreeSwitch pbx build: 0.001";
 }

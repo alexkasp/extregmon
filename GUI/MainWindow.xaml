@@ -30,7 +30,7 @@
         <RichTextBox x:Name="richTextBox" Grid.Row="1" Grid.ColumnSpan="2">
             <FlowDocument>
                 <Paragraph>
-                    <Run Text="RichTextBox"/>
+                    <Run Text=""/>
                 </Paragraph>
             </FlowDocument>
         </RichTextBox>

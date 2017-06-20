@@ -12,16 +12,15 @@ class testCommand :
 public:
 	testCommand();
 	virtual ~testCommand();
-	// ovveride virtual int RunParse(const boost::property_tree::ptree& data) = 0;
-	int RunParse(boost::property_tree::ptree& data);
 	// check if line exists on server and find out status of registration
-	int checkLineStatus(string login, boost::property_tree::ptree& data);
+	virtual std::string getLineStatusCMD(std::string login);
 	// scan log file for log with this line
-	int getLineLog(string login, std::vector<std::string>& pt);
+	virtual int getLineLog(string login, std::vector<std::string>& pt);
 	// set position one line back
 	int LineBackLog(std::ifstream& log);
 	// set read ptr to start sip packet
 	int SetPositionToBeginSipHeader(std::ifstream& log, int&sendcounter);
 	int SendSipPacket(std::ifstream& log, int sendcounter, std::vector<std::string>& pt);
+	virtual std::string SayHello();
 };
 

@@ -1,15 +1,31 @@
+#define BOOST_TEST_MODULE My Test 
 
-#define BOOST_TEST_MAIN
-#define BOOST_TEST_DYN_LINK
-#include <boost\test\unit_test.hpp>
-#include "MainListen.h"
+#include "Server.h"
+#include <fstream>
+#include <boost/test/included/unit_test.hpp> 
 
 
-BOOST_AUTO_TEST_SUITE(TestFuzzyCompare)
+BOOST_AUTO_TEST_CASE(getCommandType_test)
+{
+	Server srv;
+	//srv.startListen(7542);
+	std::ofstream testParam("testParamOne.php",std::ofstream::trunc);
+	testParam << "public static $pbxtype='aster';";
+	testParam.close();
+	int rettype = srv.getCommandType("testParamOne.php", "pbxtype");
+	BOOST_TEST(rettype == 1);
 
-BOOST_AUTO_TEST_CASE(Equal) {
-	MainListen ml;
+	testParam.open("testParamOne.php", std::ofstream::trunc);
+	testParam << "public static $pbxtype='extreg';";
+	testParam.close();
+	rettype = srv.getCommandType("testParamOne.php", "pbxtype");
+	BOOST_TEST(rettype == 2);
 
-	BOOST_REQUIRE(ml.run(500));
 }
-BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_CASE(pause)
+{
+	int a = 0;
+	std::cin >> a;
+
+}
