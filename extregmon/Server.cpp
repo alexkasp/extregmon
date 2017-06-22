@@ -3,6 +3,7 @@
 #include "asterCommand.h"
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
+#include <boost/foreach.hpp>
 #include <fstream>
 
 #define ASTER_PBX_DETECTED 1
@@ -115,30 +116,43 @@ int Server::MainLoop(tcp::socket& socket, ICommand* module)
 	{
 		if(module->RunParse(pt))
 		{
-		    std::ostringstream oss;
-		    boost::property_tree::json_parser::write_json(oss, pt);
-		    message = oss.str();
-		    std::cout<<message<<"\n";
-		    boost::asio::write(socket, boost::asio::buffer(message), ignored_error);
+		   
+			BOOST_FOREACH(boost::property_tree::ptree::value_type &v, pt.get_child(Server::RESULT_LABEL))
+			{
+				boost::asio::write(socket, boost::asio::buffer(v.second.data()), ignored_error);
+				string answer = readStringFromSocket(socket);
+				if (answer == "break")
+					break;
+			}
+			
+			boost::asio::write(socket, boost::asio::buffer("finish"), ignored_error);
+		   
 		    return 1;
 		}
 	}
 	return 0;
 }
 
+std::string Server::readStringFromSocket(tcp::socket& socket)
+{
+	boost::asio::streambuf input;
+	boost::system::error_code ignored_error;
+
+	size_t size = boost::asio::read_until(socket, input, "\r\n", ignored_error);
+	string str(boost::asio::buffers_begin(input.data()), boost::asio::buffers_begin(input.data()) + input.size());
+	input.consume(size);
+
+	return str;
+}
 
 int Server::ParseToJson(tcp::socket& socket, boost::property_tree::ptree& pt)
 {
 	std::stringstream ss;
 	boost::asio::streambuf input;
 	boost::system::error_code ignored_error;
-
 	try
 	{
-		size_t size = boost::asio::read_until(socket, input, "\r\n", ignored_error);
-		string str(boost::asio::buffers_begin(input.data()), boost::asio::buffers_begin(input.data()) + input.size());
-		input.consume(size);
-		ss << str;
+		ss << readStringFromSocket(socket);
 		boost::property_tree::read_json(ss, pt);
 		return 1;
 	}

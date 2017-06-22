@@ -59,7 +59,7 @@ namespace GUI
                         fullanswer += answer;
 
 
-                    } while ((answer.Length == ExtregClient.MaxReadBuf) && (erc.recvAnswer(ref answer)));
+                    } while ((answer!="finish") && (erc.recvAnswer(ref answer)));
                 }
                
 

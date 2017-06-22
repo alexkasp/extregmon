@@ -55,7 +55,7 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 				string statusCMD = getLineStatusCMD(login);
 				std::cout<<"StatusCMD = "<<statusCMD<<"\n";
 				string output = checkLineStatus(statusCMD);
-				data.put("LineStatus", output);
+				data.put("result", output);
 				return 1;
 			}
 			if (command.compare("GetSipLogs") == 0)
@@ -65,8 +65,8 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 				getLineLog(login, readdata);
 				data.add("log", "Start Log");
 				for (auto x = readdata.begin(); x != readdata.end(); ++x)
-					data.add("log", (*x));
-				data.add("log", "End Log");
+					data.add("result", (*x));
+				
 				return 1;
 			}
 

@@ -16,12 +16,14 @@ class Server
 {
 public:
 	Server();
+	static const std::string RESULT_LABEL;
 	virtual ~Server();
 	// start listen for incomming commands
 	bool startListen(int port);
 protected:
 	// main io object
 	boost::asio::io_service io_main;
+	std::string readStringFromSocket(tcp::socket& socket);
 public:
 	// get CommandType from selected param in file
 	int getCommandType(std::string filename, std::string paramname);
@@ -29,6 +31,6 @@ public:
 	int ParseToJson(tcp::socket& socket, boost::property_tree::ptree& pt);
 };
 
-
+const std::string Server::RESULT_LABEL = "result";
 	
 #endif
