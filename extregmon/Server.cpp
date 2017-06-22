@@ -42,6 +42,7 @@ bool Server::startListen(int port)
 		}
 		std::cout<<"Make Hello str\n";
 		std::string message = tc->SayHello();
+		message += " {fix bug with get status line}";
 		std::cout<<"hello str = "<<message<<"\n";
 		for (;;)
 		{

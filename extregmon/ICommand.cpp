@@ -23,10 +23,15 @@ ICommand::~ICommand()
 // get output from command execution in shell
 string ICommand::getConsoleOutput(string command)
 {
-	char output[1255];
+	const int MaxOutput = 12550;
+	char output[MaxOutput];
+	string resultoutput = "";
 #ifdef __linux__
 	FILE* stream = popen(command.c_str(), "r");
-	fgets(output, 1024, stream);
+	while(fgets(output, 1024, stream)!=NULL)
+	{
+	    resultoutput += std::string(output);
+	}
 
 	pclose(stream);
 #endif // __LINUX__
@@ -34,7 +39,7 @@ string ICommand::getConsoleOutput(string command)
 	
 
 
-	return output;
+	return resultoutput;
 }
 
 int ICommand::RunParse(boost::property_tree::ptree& data)
@@ -48,7 +53,7 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 			{
 				string login = data.get<std::string>("LineStatusLogin", "");
 				string statusCMD = getLineStatusCMD(login);
-				string output = checkLineStatus(login);
+				string output = checkLineStatus(statusCMD);
 				data.put("LineStatus", output);
 				return 1;
 			}
@@ -75,6 +80,7 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 
 std::string ICommand::checkLineStatus(std::string statusCMD)
 {
+	
 	string output = getConsoleOutput(statusCMD);
 	string msg = "extregTest:";
 	msg += output;
