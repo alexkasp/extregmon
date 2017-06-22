@@ -113,13 +113,15 @@ int Server::MainLoop(tcp::socket& socket, ICommand* module)
 
 	if(ParseToJson(socket, pt))
 	{
-		module->RunParse(pt);
-		std::ostringstream oss;
-		boost::property_tree::json_parser::write_json(oss, pt);
-		message = oss.str();
-		
-		boost::asio::write(socket, boost::asio::buffer(message), ignored_error);
-		return 1;
+		if(module->RunParse(pt))
+		{
+		    std::ostringstream oss;
+		    boost::property_tree::json_parser::write_json(oss, pt);
+		    message = oss.str();
+		    std::cout<<message<<"\n";
+		    boost::asio::write(socket, boost::asio::buffer(message), ignored_error);
+		    return 1;
+		}
 	}
 	return 0;
 }

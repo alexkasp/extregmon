@@ -53,6 +53,7 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 			{
 				string login = data.get<std::string>("LineStatusLogin", "");
 				string statusCMD = getLineStatusCMD(login);
+				std::cout<<"StatusCMD = "<<statusCMD<<"\n";
 				string output = checkLineStatus(statusCMD);
 				data.put("LineStatus", output);
 				return 1;
@@ -144,7 +145,7 @@ int ICommand::SendSipPacket(std::ifstream& log, int sendcounter, std::vector<std
 	std::cout << "THIS LINES ADD TO TREE\n" << packetdata << "\n";
 	while (log.getline(data, 8096))
 	{
-		if((this->checkSipPacketBegin(data)))
+		if((this->checkSipPacketEnd(data)))
 		{
 			std::cout << "WE FINISH READ PACKET - GO SEARCH AGAIN\n";
 			return 1;
@@ -180,7 +181,7 @@ int ICommand::LineBackLog(std::ifstream& log)
 
 
 // set read ptr to start sip packet
-int ICommand::SetPositionToBeginSipHeader(std::ifstream& log, int&sendcounter)
+int ICommand::SetPositionToBeginSipHeader(std::ifstream& log, int& sendcounter)
 {
 	int i = 0;
 	char data[8096];
@@ -197,7 +198,7 @@ int ICommand::SetPositionToBeginSipHeader(std::ifstream& log, int&sendcounter)
 		std::cout << "SetPosition" << std::endl;
 		log.getline(data, 8096);
 
-		if(this->checkSipPacketEnd(data))
+		if(this->checkSipPacketBegin(data))
 		{
 			std::cout << "WE FINK WE ON START PACKET\n";
 			LineBackLog(log);
