@@ -9,6 +9,8 @@
 #define ASTER_PBX_DETECTED 1
 #define FREESWITCH_PBX_DETECTED 2
 
+
+
 Server::Server()
 {
 }
@@ -60,6 +62,7 @@ bool Server::startListen(int port)
 				std::cout<<"run main loop\n";
 				while(MainLoop(socket, tc))
 				{
+					boost::asio::write(socket, boost::asio::buffer("finish"), ignored_error);
 					std::cout<<"MOVE CICLE\n";
 				}
 			}
@@ -116,19 +119,22 @@ int Server::MainLoop(tcp::socket& socket, ICommand* module)
 	{
 		if(module->RunParse(pt))
 		{
-		   
-			BOOST_FOREACH(boost::property_tree::ptree::value_type &v, pt.get_child(Server::RESULT_LABEL))
+		   std::cout<<"TRUE ON RUN PARSE check\n"<<ICommand::RESULT_LABEL<<"\n";
+			BOOST_FOREACH(boost::property_tree::ptree::value_type &v, pt.get_child(ICommand::RESULT_LABEL))
 			{
+				std::cout<<"first "<<v.first.data()<<"\n second "<<v.second.data()<<"\n";
 				boost::asio::write(socket, boost::asio::buffer(v.second.data()), ignored_error);
 				string answer = readStringFromSocket(socket);
 				if (answer == "break")
 					break;
 			}
 			
-			boost::asio::write(socket, boost::asio::buffer("finish"), ignored_error);
+			
 		   
 		    return 1;
 		}
+		else
+		    std::cout<<"FALSE ON RUN PARSE\n";
 	}
 	return 0;
 }

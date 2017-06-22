@@ -7,6 +7,7 @@ using namespace std;
 class ICommand
 {
 public:
+	static const std::string RESULT_LABEL;
 	ICommand();
 	virtual ~ICommand();
 	// Parse data and make action

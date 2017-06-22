@@ -16,6 +16,7 @@ ICommand::~ICommand()
 {
 }
 
+const std::string ICommand::RESULT_LABEL = "result";
 
 
 
@@ -55,7 +56,7 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 				string statusCMD = getLineStatusCMD(login);
 				std::cout<<"StatusCMD = "<<statusCMD<<"\n";
 				string output = checkLineStatus(statusCMD);
-				data.put("result", output);
+				data.put(ICommand::RESULT_LABEL+".status", output);
 				return 1;
 			}
 			if (command.compare("GetSipLogs") == 0)
@@ -63,9 +64,8 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 				string login = data.get<std::string>("LineSipLogLogin", "");
 				vector<string> readdata;
 				getLineLog(login, readdata);
-				data.add("log", "Start Log");
 				for (auto x = readdata.begin(); x != readdata.end(); ++x)
-					data.add("result", (*x));
+					data.add(ICommand::RESULT_LABEL+".log", (*x));
 				
 				return 1;
 			}
@@ -103,7 +103,6 @@ int ICommand::getLineLog(string login, std::vector<std::string>& pt)
 
 			if (strstr(data, login.c_str()))
 			{
-				std::cout << "FIND " << data << "\n";
 
 				if (strstr(data, "From:"))
 				{
@@ -135,24 +134,20 @@ int ICommand::getLineLog(string login, std::vector<std::string>& pt)
 
 int ICommand::SendSipPacket(std::ifstream& log, int sendcounter, std::vector<std::string>& pt)
 {
-	std::cout << "THIS LINES ADD TO TREE\n";
 
 	char packetdata[8096];
 	char data[8096];
 	log.getline(packetdata, 8096);
 	log.getline(packetdata, 8096);
 	pt.push_back(packetdata);
-	std::cout << "THIS LINES ADD TO TREE\n" << packetdata << "\n";
 	while (log.getline(data, 8096))
 	{
 		if((this->checkSipPacketEnd(data)))
 		{
-			std::cout << "WE FINISH READ PACKET - GO SEARCH AGAIN\n";
 			return 1;
 		}
 		--sendcounter;
 
-		std::cout << data << "\n";
 		pt.push_back(data);
 
 	}
@@ -195,12 +190,10 @@ int ICommand::SetPositionToBeginSipHeader(std::ifstream& log, int& sendcounter)
 			std::cout << "Error line back\n";
 			return 0;
 		}
-		std::cout << "SetPosition" << std::endl;
 		log.getline(data, 8096);
 
 		if(this->checkSipPacketBegin(data))
 		{
-			std::cout << "WE FINK WE ON START PACKET\n";
 			LineBackLog(log);
 			return 1;
 		}

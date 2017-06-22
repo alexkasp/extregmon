@@ -16,7 +16,6 @@ class Server
 {
 public:
 	Server();
-	static const std::string RESULT_LABEL;
 	virtual ~Server();
 	// start listen for incomming commands
 	bool startListen(int port);
@@ -31,6 +30,4 @@ public:
 	int ParseToJson(tcp::socket& socket, boost::property_tree::ptree& pt);
 };
 
-const std::string Server::RESULT_LABEL = "result";
-	
 #endif
