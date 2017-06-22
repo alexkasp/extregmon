@@ -62,8 +62,9 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 			if (command.compare("GetSipLogs") == 0)
 			{
 				string login = data.get<std::string>("LineSipLogLogin", "");
+				string reqtimestr = data.get<std::string>("RequestTime", "");
 				vector<string> readdata;
-				getLineLog(login, readdata);
+				getLineLog(login, reqtimestr, readdata);
 				for (auto x = readdata.begin(); x != readdata.end(); ++x)
 					data.add(ICommand::RESULT_LABEL+".log", (*x));
 				
@@ -89,15 +90,27 @@ std::string ICommand::checkLineStatus(std::string statusCMD)
 	return output;
 }
 
-int ICommand::getLineLog(string login, std::vector<std::string>& pt)
+int ICommand::getLineLog(string login, string reqtimestr, std::vector<std::string>& pt)
 {
 	ifstream log(getLogFilename());
+
+	std::string timestr = getTimeStr(reqtimestr);
 	int i = 0;
 	if (log)
 	{
 		char data[10000];
 		std::streamoff ptr;
 		ptr = log.tellg();
+		if(!timestr.empty())
+		{
+			while (log.getline(data, 8096))
+			{
+				if (strstr(data, timestr.c_str()) != nullptr)
+					break;
+			}
+		}
+		
+
 		while (log.getline(data, 8096))
 		{
 
@@ -202,4 +215,14 @@ int ICommand::SetPositionToBeginSipHeader(std::ifstream& log, int& sendcounter)
 	}
 
 	return 0;
+}
+
+std::string ICommand::getTimeStr(std::string requestTime)
+{
+	struct std::tm tm;
+	std::istringstream ss(requestTime);
+
+	ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S"); // or just %T in this case
+
+	return formateDateTime(tm);
 }

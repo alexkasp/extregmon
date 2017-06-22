@@ -53,3 +53,11 @@ std::string testCommand::getLogFilename()
 
 	return "/var/log/freeswitch/freeswitch.log";
 }
+
+std::string formateDateTime(std::tm tm)
+{
+	//2017-06-22 16:08:23 example
+	ostringstream os;
+	os << tm.tm_year << "-" << tm.tm_mon << "-" << tm.tm_mday << " " << tm.tm_hour << ":" << tm.tm_min << ":" << tm.tm_sec;
+	return os.str();
+}

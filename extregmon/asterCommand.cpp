@@ -17,6 +17,16 @@ std::string asterCommand::SayHello()
 	return "Asterisk pbx build: 0.001";
 }
 
+std::string asterCommand::formateDateTime(std::tm tm)
+{
+	//[2017-06-22 13:56:53] example
+	
+	
+	ostringstream os;
+	os << "[" << tm.tm_year << "-" << tm.tm_mon << "-" << tm.tm_mday << " " << tm.tm_hour << ":" << tm.tm_min << ":" << tm.tm_sec << "]";
+	return os.str();
+
+}
 
 bool asterCommand::checkSipPacketBegin(std::string line)
 {

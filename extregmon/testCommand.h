@@ -20,5 +20,6 @@ public:
 
 	virtual std::string SayHello();
 	virtual std::string getLogFilename();
+	virtual std::string formateDateTime(std::tm tm);
 };
 

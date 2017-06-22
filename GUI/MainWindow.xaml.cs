@@ -48,6 +48,7 @@ namespace GUI
         {
             
             string answer = "";
+            string proto = "";
             string fullanswer = "";
 
             if (erc.sendCommand(command, ref answer))
@@ -57,7 +58,7 @@ namespace GUI
                     do
                     {
                         fullanswer += answer;
-
+                        erc.sendCommand("next", ref proto);
 
                     } while ((answer!="finish") && (erc.recvAnswer(ref answer)));
                 }
