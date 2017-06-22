@@ -20,6 +20,8 @@ namespace GUI
                 IPAddress ip = IPAddress.Parse(servaddr);
                 IPEndPoint ipEndPoint = new IPEndPoint(ip, 7524);
                 socket = new Socket(ip.AddressFamily,SocketType.Stream, ProtocolType.Tcp);
+                socket.ReceiveTimeout = 10;
+                
                 socket.Connect(ipEndPoint);
 
             }

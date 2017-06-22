@@ -87,3 +87,125 @@ std::string ICommand::checkLineStatus(std::string statusCMD)
 
 	return output;
 }
+
+int ICommand::getLineLog(string login, std::vector<std::string>& pt)
+{
+	ifstream log(getLogFilename());
+	int i = 0;
+	if (log)
+	{
+		char data[10000];
+		std::streamoff ptr;
+		ptr = log.tellg();
+		while (log.getline(data, 8096))
+		{
+
+			if (strstr(data, login.c_str()))
+			{
+				std::cout << "FIND " << data << "\n";
+
+				if (strstr(data, "From:"))
+				{
+
+					int sendcounter = 0;
+					if (SetPositionToBeginSipHeader(log, sendcounter))
+						SendSipPacket(log, sendcounter, pt);
+					else
+					{
+						break;
+					}
+				}
+			}
+			if (log.eof())
+			{
+				log.close();
+				log.clear();
+
+				return 1;
+			}
+		}
+		log.close();
+		log.clear();
+
+
+	}
+	return 0;
+}
+
+int ICommand::SendSipPacket(std::ifstream& log, int sendcounter, std::vector<std::string>& pt)
+{
+	std::cout << "THIS LINES ADD TO TREE\n";
+
+	char packetdata[8096];
+	char data[8096];
+	log.getline(packetdata, 8096);
+	log.getline(packetdata, 8096);
+	pt.push_back(packetdata);
+	std::cout << "THIS LINES ADD TO TREE\n" << packetdata << "\n";
+	while (log.getline(data, 8096))
+	{
+		if((this->checkSipPacketBegin(data)))
+		{
+			std::cout << "WE FINISH READ PACKET - GO SEARCH AGAIN\n";
+			return 1;
+		}
+		--sendcounter;
+
+		std::cout << data << "\n";
+		pt.push_back(data);
+
+	}
+
+	if (log.eof())
+		return 1;
+	return 0;
+}
+
+// set position one line back
+int ICommand::LineBackLog(std::ifstream& log)
+{
+	log.seekg(-2, log.cur);
+	while (true)
+	{
+		log.seekg(-2, log.cur);
+		auto ptr = log.tellg();
+		if (ptr < 0) return 0;
+		char in = log.get();
+		if (in == '\n')
+			return 1;
+	}
+
+	return 0;
+}
+
+
+// set read ptr to start sip packet
+int ICommand::SetPositionToBeginSipHeader(std::ifstream& log, int&sendcounter)
+{
+	int i = 0;
+	char data[8096];
+	while (true)
+	{
+		++i;
+
+		int prevlineback = LineBackLog(log);
+		if (!LineBackLog(log) || !prevlineback)
+		{
+			std::cout << "Error line back\n";
+			return 0;
+		}
+		std::cout << "SetPosition" << std::endl;
+		log.getline(data, 8096);
+
+		if(this->checkSipPacketEnd(data))
+		{
+			std::cout << "WE FINK WE ON START PACKET\n";
+			LineBackLog(log);
+			return 1;
+		}
+		if (log.eof())
+			return 1;
+	}
+
+	return 0;
+}

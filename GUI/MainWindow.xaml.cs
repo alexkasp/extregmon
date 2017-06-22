@@ -88,7 +88,9 @@ namespace GUI
                 richTextBox.Document.Blocks.Add(new Paragraph(new Run(answer)));
                 connect(ref erc2, "212.193.100.97", ref answer);
                 richTextBox.Document.Blocks.Add(new Paragraph(new Run(answer)));
-                connect(ref erc3, "212.193.100.98", ref answer);
+                connect(ref erc3, "212.193.100.94", ref answer);
+                richTextBox.Document.Blocks.Add(new Paragraph(new Run(answer)));
+                connect(ref erc3, "212.193.100.65", ref answer);
                 richTextBox.Document.Blocks.Add(new Paragraph(new Run(answer)));
             }
             else
@@ -98,6 +100,8 @@ namespace GUI
                 else if (comboBox.SelectedIndex == 2)
                     connect(ref erc2, comboBox.Text, ref answer);
                 else if (comboBox.SelectedIndex == 3)
+                    connect(ref erc3, comboBox.Text, ref answer);
+                else if (comboBox.SelectedIndex == 4)
                     connect(ref erc3, comboBox.Text, ref answer);
 
 

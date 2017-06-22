@@ -20,141 +20,36 @@ std::string testCommand::getLineStatusCMD(std::string login)
 }
 
 // scan log file for log with this line
-int testCommand::getLineLog(string login, std::vector<std::string>& pt)
-{
-	ifstream log("/var/log/freeswitch/freeswitch.log");
-//	ifstream log("./test.log");
-	int i = 0;
-	if (log)
-	{
-		char data[10000];
-		std::streamoff ptr;
-		ptr = log.tellg();
-		while (log.getline(data, 8096))
-		{
-		
-			if (strstr(data, login.c_str()))
-			{
-			    std::cout<<"FIND "<<data<<"\n";
-			    
-			    if(strstr(data, "From:"))
-				{
-				
-				//	if ((data[3] == '-')&& (data[4] == '-') && (data[5] == '-') && (data[6] == '-') && (data[7] == '-') && (data[8] == '-') && (data[9] == '-') )
-					//	continue;
-				    int sendcounter = 0;
-				    if (SetPositionToBeginSipHeader(log,sendcounter))
-					SendSipPacket(log,sendcounter,pt);
-				    else
-				    {
-					break;
-				    }
-				}
-			}
-			if(log.eof())
-			{
-			    log.close();
-			    log.clear();
-			    
-			    return 1;
-			}    
-		}
-		log.close();
-		log.clear();
 
+
+
+bool testCommand::checkSipPacketBegin(std::string data)
+{
+	if ((data.compare(STARTPACKETSIGNATURE1) == 0) ||
+		(data.compare(STARTPACKETSIGNATURE2) == 0) ||
+		(data.compare(STARTPACKETSIGNATURE3) == 0) || (data.compare(STARTPACKETSIGNATURE4) == 0))
+		return true;
 		
-	}
-	return 0;
+	return false;
+}
+bool testCommand::checkSipPacketEnd(std::string data)
+{
+	if ((data.c_str()[3] == '-') && (data.c_str()[4] == '-') && (data.c_str()[5] == '-') && (data.c_str()[6] == '-') && (data.c_str()[7] == '-') && (data.c_str()[8] == '-') && (data.c_str()[9] == '-'))
+		return true;
+	return false;
 }
 
 
-// set position one line back
-int testCommand::LineBackLog(std::ifstream& log)
-{
-	log.seekg(-2, log.cur);
-	while (true)
-	{
-		log.seekg(-2, log.cur);
-		auto ptr = log.tellg();
-		if (ptr < 0) return 0;
-		char in = log.get();
-		if (in == '\n')
-			return 1;
-	}
 
-	return 0;
-}
-
-
-// set read ptr to start sip packet
-int testCommand::SetPositionToBeginSipHeader(std::ifstream& log, int&sendcounter)
-{
-	int i=0;
-	char data[8096];
-	while (true)
-	{
-		++i;
-		
-		int prevlineback = LineBackLog(log);
-		if(!LineBackLog(log)||!prevlineback)
-		{
-		    std::cout<<"Error line back\n";
-		    return 0;
-		}
-		std::cout << "SetPosition" << std::endl;
-		log.getline(data, 8096);
-		
-		if (strstr(data, STARTPACKETSIGNATURE1.c_str()) || 
-			strstr(data, STARTPACKETSIGNATURE2.c_str()) || 
-			strstr(data, STARTPACKETSIGNATURE3.c_str()) || strstr(data, STARTPACKETSIGNATURE4.c_str())|| 
-			((data[3] == '-') && (data[4] == '-') && (data[5] == '-') && (data[6] == '-') && (data[7] == '-') && (data[8] == '-') && (data[9] == '-')))
-		{
-			std::cout<<"WE FINK WE ON START PACKET\n";
-			LineBackLog(log);
-			return 1;
-		}
-		if(log.eof())
-		    return 1;
-	}
-
-	return 0;
-}
-
-
-int testCommand::SendSipPacket(std::ifstream& log, int sendcounter, std::vector<std::string>& pt)
-{
-	std::cout<<"THIS LINES ADD TO TREE\n";
-	
-	char packetdata[8096];
-	char data[8096];
-	log.getline(packetdata, 8096);
-	log.getline(packetdata, 8096);
-	pt.push_back(packetdata);
-		std::cout<<"THIS LINES ADD TO TREE\n"<<packetdata<<"\n";
-	while (log.getline(data, 8096))
-	{
-		if (strstr(data, STARTPACKETSIGNATURE1.c_str()) ||
-			strstr(data, STARTPACKETSIGNATURE2.c_str()) ||
-			strstr(data, STARTPACKETSIGNATURE3.c_str()) || strstr(data, STARTPACKETSIGNATURE4.c_str()) ||
-			((data[3] == '-') && (data[4] == '-') && (data[5] == '-') && (data[6] == '-') && (data[7] == '-') && (data[8] == '-') && (data[9] == '-')))
-		{
-			std::cout<<"WE FINISH READ PACKET - GO SEARCH AGAIN\n";
-			return 1;
-		}
-		--sendcounter;
-		
-		std::cout<<data<<"\n";
-		pt.push_back(data);
-
-	}
-
-	if(log.eof())
-	    return 1;
-	return 0;
-}
 
 
 std::string testCommand::SayHello()
 {
 	return "FreeSwitch pbx build: 0.001";
+}
+
+std::string testCommand::getLogFilename()
+{
+
+	return "/var/log/freeswitch/freeswitch.log";
 }

@@ -8,7 +8,10 @@ public:
 	virtual ~asterCommand();
 	std::string SayHello();
 	virtual std::string getLineStatusCMD(std::string login);
-	// scan log file for log with this line
-	virtual int getLineLog(string login, std::vector<std::string>& pt);
+	virtual std::string getLogFilename();
+	
+
+	virtual bool checkSipPacketBegin(std::string line);
+	virtual bool checkSipPacketEnd(std::string line);
 };
 
