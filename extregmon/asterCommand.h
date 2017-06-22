@@ -13,5 +13,6 @@ public:
 
 	virtual bool checkSipPacketBegin(std::string line);
 	virtual bool checkSipPacketEnd(std::string line);
+	virtual std::string formateDateTime(std::tm tm);
 };
 

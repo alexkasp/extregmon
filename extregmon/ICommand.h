@@ -16,11 +16,11 @@ public:
 	string getConsoleOutput(string command);
 	// report self type and additional data
 	
-	
+	std::string ICommand::getTimeStr(std::string requestTime);
 
 	std::string checkLineStatus(string statusCMD);
 	// scan log file for log with this line
-	int getLineLog(string login, std::vector<std::string>& pt);
+	int getLineLog(string login, string reqtimestr,std::vector<std::string>& pt);
 
 	int SetPositionToBeginSipHeader(std::ifstream& log, int&sendcounter);
 	int SendSipPacket(std::ifstream& log, int sendcounter, std::vector<std::string>& pt);
@@ -31,5 +31,6 @@ public:
 	virtual bool checkSipPacketBegin(std::string line) = 0;
 	virtual bool checkSipPacketEnd(std::string line) = 0;
 	virtual std::string SayHello() = 0;
+	virtual std::string formateDateTime(std::tm tm) = 0;
 };
 
