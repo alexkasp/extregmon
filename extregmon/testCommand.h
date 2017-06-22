@@ -14,13 +14,11 @@ public:
 	virtual ~testCommand();
 	// check if line exists on server and find out status of registration
 	virtual std::string getLineStatusCMD(std::string login);
-	// scan log file for log with this line
-	virtual int getLineLog(string login, std::vector<std::string>& pt);
-	// set position one line back
-	int LineBackLog(std::ifstream& log);
-	// set read ptr to start sip packet
-	int SetPositionToBeginSipHeader(std::ifstream& log, int&sendcounter);
-	int SendSipPacket(std::ifstream& log, int sendcounter, std::vector<std::string>& pt);
+
+	virtual bool checkSipPacketBegin(std::string line);
+	virtual bool checkSipPacketEnd(std::string line);
+
 	virtual std::string SayHello();
+	virtual std::string getLogFilename();
 };
 

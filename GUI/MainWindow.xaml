@@ -38,14 +38,14 @@
             <System:String>All</System:String>
             <System:String>212.193.100.96</System:String>
             <System:String>212.193.100.97</System:String>
-            <System:String>212.193.100.98</System:String>
+            <System:String>212.193.100.94</System:String>
             <System:String>212.193.100.65</System:String>
         </ComboBox>
         <ComboBox x:Name="comboBox1" HorizontalAlignment="Left" Margin="453,35,0,0" VerticalAlignment="Top" Width="122">
             <System:String>All</System:String>
             <System:String>212.193.100.96</System:String>
             <System:String>212.193.100.97</System:String>
-            <System:String>212.193.100.98</System:String>
+            <System:String>212.193.100.94</System:String>
             <System:String>212.193.100.65</System:String>
         </ComboBox>
         <TextBox x:Name="textBox1" HorizontalAlignment="Left" Height="23" Margin="293,35,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="155" TextChanged="textBox1_TextChanged"/>

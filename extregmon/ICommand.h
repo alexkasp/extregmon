@@ -14,14 +14,21 @@ public:
 	// get output from command execution in shell
 	string getConsoleOutput(string command);
 	// report self type and additional data
-	virtual std::string SayHello() = 0;
+	
 	
 
 	std::string checkLineStatus(string statusCMD);
 	// scan log file for log with this line
-	virtual int getLineLog(string login, std::vector<std::string>& pt) = 0;
+	int getLineLog(string login, std::vector<std::string>& pt);
+
+	int SetPositionToBeginSipHeader(std::ifstream& log, int&sendcounter);
+	int SendSipPacket(std::ifstream& log, int sendcounter, std::vector<std::string>& pt);
+	int LineBackLog(std::ifstream& log);
+
 	virtual std::string getLineStatusCMD(std::string login) = 0;
-
-
+	virtual std::string getLogFilename() = 0;
+	virtual bool checkSipPacketBegin(std::string line) = 0;
+	virtual bool checkSipPacketEnd(std::string line) = 0;
+	virtual std::string SayHello() = 0;
 };
 
