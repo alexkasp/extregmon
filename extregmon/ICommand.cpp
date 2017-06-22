@@ -64,9 +64,13 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 				string login = data.get<std::string>("LineSipLogLogin", "");
 				vector<string> readdata;
 				getLineLog(login, readdata);
-				for (auto x = readdata.begin(); x != readdata.end(); ++x)
-					data.add(ICommand::RESULT_LABEL+".log", (*x));
-				
+				if(readdata.size()>0)
+				{
+				    for (auto x = readdata.begin(); x != readdata.end(); ++x)
+					    data.add(ICommand::RESULT_LABEL+".log", (*x));
+				}
+				else
+				    data.add(ICommand::RESULT_LABEL+".log","NOT FOUND LOGS");
 				return 1;
 			}
 
