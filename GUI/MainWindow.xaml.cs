@@ -65,7 +65,10 @@ namespace GUI
                
 
             }
-            resultanswer += '\n';
+            else
+            {
+                resultanswer += answer;
+            }
            resultanswer += fullanswer;
 
             return true;
@@ -114,7 +117,7 @@ namespace GUI
         private void button1_Click(object sender, RoutedEventArgs e)
         {
             string resultanswer = "";
-            string command = textBox.Text+textBox1.Text+"\"}";
+            string command = textBox.Text+textBox1.Text+ "\",\"RequestTime\":\""+textBox2.Text+"\"}";
 
             if (comboBox1.SelectedIndex==0)
             {
