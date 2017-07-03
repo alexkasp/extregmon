@@ -48,20 +48,23 @@ BOOST_AUTO_TEST_CASE(lineBackLog)
 
 	tc.LineBackLog(testi);
 	testi.getline(buf, 1024);
+	std::cout << buf << "\n";
 	std::string tmp = std::string(buf);
-	BOOST_TEST(check3.compare(tmp) == 0);
+	BOOST_TEST(check3 == tmp);
 
 	tc.LineBackLog(testi);
 	tc.LineBackLog(testi);
 	testi.getline(buf, 1024);
+	std::cout << buf << "\n";
 	std::string tmp1 = std::string(buf);
-	BOOST_TEST(check2.compare(tmp1) == 0);
+	BOOST_TEST(check2 == tmp1);
 
 	tc.LineBackLog(testi);
 	tc.LineBackLog(testi);
 	testi.getline(buf, 1024);
+	std::cout << buf << "\n";
 	std::string tmp2 = std::string(buf);
-	BOOST_TEST(check3.compare(tmp2) == 0);
+	BOOST_TEST(check3 ==tmp2);
 
 }
 

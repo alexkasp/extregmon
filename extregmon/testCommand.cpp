@@ -54,7 +54,7 @@ std::string testCommand::getLogFilename()
 	return "/var/log/freeswitch/freeswitch.log";
 }
 
-std::string formateDateTime(std::tm tm)
+std::string testCommand::formateDateTime(std::tm tm)
 {
 	//2017-06-22 16:08:23 example
 	ostringstream os;
