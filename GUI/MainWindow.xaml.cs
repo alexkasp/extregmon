@@ -23,6 +23,8 @@ namespace GUI
         ExtregClient erc1;
         ExtregClient erc2;
         ExtregClient erc3;
+        ExtregClient erc4;
+        ExtregClient erc5;
 
         public MainWindow()
         {
@@ -30,6 +32,8 @@ namespace GUI
             erc1 = new ExtregClient();
             erc2 = new ExtregClient();
             erc3 = new ExtregClient();
+            erc4 = new ExtregClient();
+            erc5 = new ExtregClient();
         }
 
         private bool connect(ref ExtregClient erc,string ipaddr,ref string message)
@@ -44,29 +48,33 @@ namespace GUI
             return false;
         }
 
-        private bool RunCommand(ref ExtregClient erc,ref string resultanswer,string command)
+        private bool RunCommand(ref ExtregClient erc,ref Paragraph myparagraph,string command)
         {
             
             string answer = "";
             string proto = "";
-            string fullanswer = "";
-
+            
             if (erc.sendCommand(command, ref answer))
             {
                 if (erc.recvAnswer(ref answer))
                 {
                     do
                     {
-                        fullanswer += answer;
+                        if (answer == "finish\0")
+                            return true;
+                        myparagraph.Inlines.Add(answer + "\n");
                         erc.sendCommand("next", ref proto);
 
-                    } while ((answer!="finish") && (erc.recvAnswer(ref answer)));
+                    } while(erc.recvAnswer(ref answer));
                 }
                
 
             }
-            resultanswer += '\n';
-           resultanswer += fullanswer;
+            else
+            {
+                myparagraph.Inlines.Add(answer + "\n");
+            }
+            myparagraph.Inlines.Add(answer + "\n");
 
             return true;
         }
@@ -91,7 +99,9 @@ namespace GUI
                 richTextBox.Document.Blocks.Add(new Paragraph(new Run(answer)));
                 connect(ref erc3, "212.193.100.94", ref answer);
                 richTextBox.Document.Blocks.Add(new Paragraph(new Run(answer)));
-                connect(ref erc3, "212.193.100.65", ref answer);
+                connect(ref erc4, "212.193.100.95", ref answer);
+                richTextBox.Document.Blocks.Add(new Paragraph(new Run(answer)));
+                connect(ref erc5, "212.193.100.65", ref answer);
                 richTextBox.Document.Blocks.Add(new Paragraph(new Run(answer)));
             }
             else
@@ -103,7 +113,9 @@ namespace GUI
                 else if (comboBox.SelectedIndex == 3)
                     connect(ref erc3, comboBox.Text, ref answer);
                 else if (comboBox.SelectedIndex == 4)
-                    connect(ref erc3, comboBox.Text, ref answer);
+                    connect(ref erc4, comboBox.Text, ref answer);
+                else if (comboBox.SelectedIndex == 5)
+                    connect(ref erc5, comboBox.Text, ref answer);
 
 
                 richTextBox.Document.Blocks.Add(new Paragraph(new Run(answer)));
@@ -113,24 +125,31 @@ namespace GUI
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
-            string resultanswer = "";
-            string command = textBox.Text+textBox1.Text+"\"}";
+            
+            string command = textBox.Text+textBox1.Text+ "\",\"RequestTime\":\""+textBox2.Text+"\"}";
+            Paragraph myparagraph = new Paragraph();
 
             if (comboBox1.SelectedIndex==0)
             {
-                RunCommand(ref erc1,ref resultanswer, command);
-                RunCommand(ref erc2, ref resultanswer, command);
-                RunCommand(ref erc3, ref resultanswer, command);
+                RunCommand(ref erc1,ref myparagraph, command);
+                RunCommand(ref erc2, ref myparagraph, command);
+                RunCommand(ref erc3, ref myparagraph, command);
+                RunCommand(ref erc4, ref myparagraph, command);
+                RunCommand(ref erc5, ref myparagraph, command);
 
             }
            else if (comboBox1.SelectedIndex == 1)
-                RunCommand(ref erc1, ref resultanswer, command);
+                RunCommand(ref erc1, ref myparagraph, command);
             else if (comboBox1.SelectedIndex == 2)
-                RunCommand(ref erc2, ref resultanswer, command);
+                RunCommand(ref erc2, ref myparagraph, command);
             else if (comboBox1.SelectedIndex == 3)
-                RunCommand(ref erc3, ref resultanswer, command);
+                RunCommand(ref erc3, ref myparagraph, command);
+            else if (comboBox1.SelectedIndex == 4)
+                RunCommand(ref erc4, ref myparagraph, command);
+            else if (comboBox1.SelectedIndex == 5)
+                RunCommand(ref erc5, ref myparagraph, command);
 
-            richTextBox.Document.Blocks.Add(new Paragraph(new Run(resultanswer)));
+            richTextBox.Document.Blocks.Add(myparagraph);
         }
 
         private void button2_Click(object sender, RoutedEventArgs e)

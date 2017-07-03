@@ -27,10 +27,11 @@ const std::string ICommand::RESULT_LABEL = "result";
 // get output from command execution in shell
 string ICommand::getConsoleOutput(string command)
 {
-	const int MaxOutput = 12550;
-	char output[MaxOutput];
+	
 	string resultoutput = "";
 #ifdef __linux__
+	const int MaxOutput = 12550;
+	char output[MaxOutput];
 	FILE* stream = popen(command.c_str(), "r");
 	while(fgets(output, 1024, stream)!=NULL)
 	{
@@ -87,6 +88,11 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 
 				return 1;
 			}
+			if (command.compare("StartSipLogs") == 0)
+			{
+				startSipLogs();
+				return 1;
+			}
 
 		}
 	}
@@ -95,6 +101,17 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 		std::cout << "Error from RunParse: " << e.what() << "\n";
 	}
 	return 0;
+}
+
+std::string ICommand::getStartSipLogCmd()
+{
+	return "";
+}
+void ICommand::startSipLogs()
+{
+	std::string CMD = getStartSipLogCmd();
+
+	string output = getConsoleOutput(CMD);
 }
 
 std::string ICommand::checkLineStatus(std::string statusCMD)

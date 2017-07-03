@@ -25,6 +25,7 @@
         <ComboBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="0,35,0,0" Text="" VerticalAlignment="Top" Width="168" IsReadOnly="False" IsEditable="True">
             <System:String>{"Command":"LineStatus","LineStatusLogin":"</System:String>
             <System:String>{"Command":"GetSipLogs","LineSipLogLogin":"</System:String>
+            <System:String>{"Command":"StartSipLogs","FakeParam":"</System:String>
         </ComboBox>
         <Button x:Name="button2" Content="Clear" HorizontalAlignment="Left" Margin="580,10,0,0" VerticalAlignment="Top" Width="75" Click="button2_Click"/>
         <RichTextBox x:Name="richTextBox" Grid.Row="1" Grid.ColumnSpan="2">
@@ -39,6 +40,7 @@
             <System:String>212.193.100.96</System:String>
             <System:String>212.193.100.97</System:String>
             <System:String>212.193.100.94</System:String>
+            <System:String>212.193.100.95</System:String>
             <System:String>212.193.100.65</System:String>
         </ComboBox>
         <ComboBox x:Name="comboBox1" HorizontalAlignment="Left" Margin="453,35,0,0" VerticalAlignment="Top" Width="122">
@@ -46,10 +48,11 @@
             <System:String>212.193.100.96</System:String>
             <System:String>212.193.100.97</System:String>
             <System:String>212.193.100.94</System:String>
+            <System:String>212.193.100.95</System:String>
             <System:String>212.193.100.65</System:String>
         </ComboBox>
         <TextBox x:Name="textBox1" HorizontalAlignment="Left" Height="23" Margin="173,37,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="155" TextChanged="textBox1_TextChanged"/>
         <Label x:Name="label" Content="параметр" HorizontalAlignment="Left" Margin="293,9,0,0" VerticalAlignment="Top" Width="155" Height="23"/>
-        <TextBox x:Name="textBox2" HorizontalAlignment="Left" Height="23" Margin="333,37,0,0" TextWrapping="Wrap" Text="{Binding Source={x:Static System:DateTime.Now}, Mode=OneWay,  StringFormat='yyyy-MM-dd HH:mm:ss '}" VerticalAlignment="Top" Width="115"/>
+        <TextBox x:Name="textBox2" HorizontalAlignment="Left" Height="23" Margin="333,37,0,0" TextWrapping="Wrap" Text="{Binding Source={x:Static System:DateTime.Now}, Mode=OneWay,  StringFormat='yyyy-MM-dd HH:mm:ss'}" VerticalAlignment="Top" Width="115"/>
     </Grid>
 </Window>
