@@ -16,6 +16,8 @@ public:
 	string getConsoleOutput(string command);
 	// report self type and additional data
 	
+	void startSipLogs();
+
 	std::string ICommand::getTimeStr(std::string requestTime);
 
 	std::string checkLineStatus(string statusCMD);
@@ -26,6 +28,7 @@ public:
 	int SendSipPacket(std::ifstream& log, int sendcounter, std::vector<std::string>& pt);
 	int LineBackLog(std::ifstream& log);
 
+	virtual std::string getStartSipLogCmd();
 	virtual std::string getLineStatusCMD(std::string login) = 0;
 	virtual std::string getLogFilename() = 0;
 	virtual bool checkSipPacketBegin(std::string line) = 0;
