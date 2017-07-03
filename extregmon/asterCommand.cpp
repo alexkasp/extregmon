@@ -23,7 +23,7 @@ std::string asterCommand::formateDateTime(std::tm tm)
 	
 	
 	ostringstream os;
-	os << "[" << tm.tm_year << "-" << tm.tm_mon << "-" << tm.tm_mday << " " << tm.tm_hour << ":" << tm.tm_min << ":" << tm.tm_sec << "]";
+	os << "[20" << tm.tm_year-100 << "-" <<setfill('0')<<setw(2)<< tm.tm_mon+1 << "-" <<setfill('0')<<setw(2)<< tm.tm_mday << " " <<setfill('0')<<setw(2)<< tm.tm_hour << ":" <<setfill('0')<<setw(2)<< tm.tm_min << ":" <<setfill('0')<<setw(2)<< tm.tm_sec << "]";
 	return os.str();
 
 }

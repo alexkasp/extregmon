@@ -1,5 +1,8 @@
 #include "ICommand.h"
 #include <iostream>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <locale>
+
 #ifdef __linux__
 #include <stdio.h>
 
@@ -63,9 +66,12 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 			{
 				string login = data.get<std::string>("LineSipLogLogin", "");
 				string reqtimestr = data.get<std::string>("RequestTime", "");
+				
+				std::cout<<"GetSIPLOG for "<<login<<" from ["<<reqtimestr<<"]\n";
+				
 				vector<string> readdata;
 
-				getLineLog(login, readdata);
+				getLineLog(login, reqtimestr,readdata);
 				if(readdata.size()>0)
 				{
 				    for (auto x = readdata.begin(); x != readdata.end(); ++x)
@@ -106,6 +112,7 @@ int ICommand::getLineLog(string login, string reqtimestr, std::vector<std::strin
 	ifstream log(getLogFilename());
 
 	std::string timestr = getTimeStr(reqtimestr);
+	std::cout<<"THIS TIME STR "<<timestr<<"\n";
 	int i = 0;
 	if (log)
 	{
@@ -117,7 +124,10 @@ int ICommand::getLineLog(string login, string reqtimestr, std::vector<std::strin
 			while (log.getline(data, 8096))
 			{
 				if (strstr(data, timestr.c_str()) != nullptr)
+				{
+				    std::cout<<"We find time \n"<<data<<"\n";
 					break;
+				}	
 			}
 		}
 		
@@ -127,6 +137,7 @@ int ICommand::getLineLog(string login, string reqtimestr, std::vector<std::strin
 
 			if (strstr(data, login.c_str()))
 			{
+				std::cout<<"We find line\n"<<data<<"\n";
 
 				if (strstr(data, "From:"))
 				{
@@ -166,6 +177,7 @@ int ICommand::SendSipPacket(std::ifstream& log, int sendcounter, std::vector<std
 	pt.push_back(packetdata);
 	while (log.getline(data, 8096))
 	{
+		std::cout<<data<<"\n";
 		if((this->checkSipPacketEnd(data)))
 		{
 			return 1;
@@ -230,10 +242,16 @@ int ICommand::SetPositionToBeginSipHeader(std::ifstream& log, int& sendcounter)
 
 std::string ICommand::getTimeStr(std::string requestTime)
 {
+/*
 	struct std::tm tm;
 	std::istringstream ss(requestTime);
 
 	ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S"); // or just %T in this case
-
+*/
+	std::cout<<"getTimeStr\n";
+	boost::posix_time::ptime pt(boost::posix_time::time_from_string(requestTime));
+	std::cout<<"get ptime from string\n";
+	std::tm tm  =  boost::posix_time::to_tm(pt);
+	std::cout<<"convert ptime to tm\n";
 	return formateDateTime(tm);
 }

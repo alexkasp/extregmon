@@ -16,7 +16,7 @@ public:
 	string getConsoleOutput(string command);
 	// report self type and additional data
 	
-	std::string ICommand::getTimeStr(std::string requestTime);
+	std::string getTimeStr(std::string requestTime);
 
 	std::string checkLineStatus(string statusCMD);
 	// scan log file for log with this line

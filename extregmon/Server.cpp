@@ -122,7 +122,6 @@ int Server::MainLoop(tcp::socket& socket, ICommand* module)
 		   std::cout<<"TRUE ON RUN PARSE check\n"<<ICommand::RESULT_LABEL<<"\n";
 			BOOST_FOREACH(boost::property_tree::ptree::value_type &v, pt.get_child(ICommand::RESULT_LABEL))
 			{
-				std::cout<<"first "<<v.first.data()<<"\n second "<<v.second.data()<<"\n";
 				boost::asio::write(socket, boost::asio::buffer(v.second.data()), ignored_error);
 				string answer = readStringFromSocket(socket);
 				if (answer == "break")
