@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -9,10 +10,41 @@ using System.Windows;
 
 namespace GUI
 {
-    class ExtregClient
+    class ExtregClient: INotifyPropertyChanged
     {
         private Socket socket;
         public const int MaxReadBuf = 2048;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public string addres { get; set; }
+        public string name { get; set; }
+
+        public override string ToString()
+        {
+            return name;
+        }
+
+        private void RaisePropertyChanged(string property)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(property));
+            }
+        }
+
+        public ExtregClient()
+        { }
+
+        public ExtregClient(string servaddr,string servname)
+        {
+            addres = servaddr;
+            name = servname;
+
+            string message = "";
+            connect(servaddr, ref message);
+        }
+
         public bool connect(string servaddr,ref string message)
         {
             try
@@ -32,6 +64,32 @@ namespace GUI
             }
            
             return true;
+        }
+
+        public Boolean RunCommand(string command, out List<string> answerList)
+        {
+            string answer = "";
+
+            answerList = new List<string>();
+            if (sendCommand(command, ref answer))
+            {
+                if (recvAnswer(ref answer))
+                {
+                    do
+                    {
+                        if (answer == "finish\0")
+                            return true;
+                      
+                        answerList.Add(answer);
+                        sendCommand("next", ref answer);
+
+                    } while (recvAnswer(ref answer));
+                }
+
+
+            }
+            return false;
+
         }
 
         public bool sendCommand(string command, ref string answer)
