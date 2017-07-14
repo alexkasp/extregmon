@@ -11,6 +11,11 @@ asterCommand::~asterCommand()
 {
 }
 
+void asterCommand::scanErrorInLog(std::ifstream& log, std::string login, std::vector<string>& pt)
+{
+
+}
+
 std::string asterCommand::getStartSipLogCmd()
 {
 

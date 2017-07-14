@@ -9,6 +9,9 @@ class testCommand :
 	string STARTPACKETSIGNATURE2 = "bytes from udp/";
 	string STARTPACKETSIGNATURE3 = "bytes to tcp/";
 	string STARTPACKETSIGNATURE4 = "bytes from tcp/";
+
+	void testCommand::DnsError(std::ifstream& log, std::string login, std::vector<string>& pt);
+
 public:
 	testCommand();
 	virtual ~testCommand();
@@ -21,5 +24,6 @@ public:
 	virtual std::string SayHello();
 	virtual std::string getLogFilename();
 	virtual std::string formateDateTime(std::tm tm);
+	virtual void scanErrorInLog(std::ifstream& log, std::string login,std::vector<string>& pt);
 };
 

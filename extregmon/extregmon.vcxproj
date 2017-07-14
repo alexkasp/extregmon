@@ -117,6 +117,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="asterCommand.h" />
+    <ClInclude Include="ErrorData.h" />
     <ClInclude Include="ICommand.h" />
     <ClInclude Include="MainListen.h" />
     <ClInclude Include="Server.h" />
@@ -124,6 +125,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="asterCommand.cpp" />
+    <ClCompile Include="ErrorData.cpp" />
     <ClCompile Include="ICommand.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainListen.cpp" />
