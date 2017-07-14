@@ -14,7 +14,7 @@ asterCommand::~asterCommand()
 std::string asterCommand::getStartSipLogCmd()
 {
 
-	return "/sbin/asterisk -rx \"sip set debug on\"";
+	return "/usr/sbin/asterisk -rx \"sip set debug on\"";
 }
 
 std::string asterCommand::SayHello()

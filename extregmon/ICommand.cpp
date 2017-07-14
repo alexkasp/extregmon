@@ -90,7 +90,7 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 			}
 			if (command.compare("StartSipLogs") == 0)
 			{
-				startSipLogs();
+				data.put(ICommand::RESULT_LABEL+".siplog",startSipLogs());
 				return 1;
 			}
 
@@ -107,11 +107,11 @@ std::string ICommand::getStartSipLogCmd()
 {
 	return "";
 }
-void ICommand::startSipLogs()
+std::string ICommand::startSipLogs()
 {
 	std::string CMD = getStartSipLogCmd();
 
-	string output = getConsoleOutput(CMD);
+	return getConsoleOutput(CMD);
 }
 
 std::string ICommand::checkLineStatus(std::string statusCMD)

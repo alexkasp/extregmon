@@ -19,7 +19,7 @@ public:
 
 	std::string getTimeStr(std::string requestTime);
 
-	void startSipLogs();
+	std::string startSipLogs();
 
 
 
