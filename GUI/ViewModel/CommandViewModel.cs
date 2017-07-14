@@ -23,7 +23,7 @@ namespace GUI.ViewModel
             commands.Add(new commandRule("linestatus","{\"Command\":\"LineStatus\",\"LineStatusLogin\":\""));
             commands.Add(new commandRule("getsiplogs","{\"Command\":\"GetSipLogs\",\"LineSipLogLogin\":\""));
             commands.Add(new commandRule("startlogcmd","{\"Command\":\"StartSipLogs\",\"FakeParam\":\""));
-
+            commands.Add(new commandRule("ErrorSearch", "{\"Command\":\"ErrorSearch\",\"LineSipLogLogin\":\""));
             selectedCmd = commands.ElementAt<commandRule>(0);
        }
     }

@@ -76,6 +76,20 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 				startSipLogs();
 				return 1;
 			}
+			if (command.compare("ErrorSearch") == 0)
+			{
+				string login = data.get<std::string>("LineSipLogLogin", "");
+				string reqtimestr = data.get<std::string>("RequestTime", "");
+
+				vector<string> readdata;
+
+				lookForError(login, reqtimestr,readdata);
+
+				for (auto x = readdata.begin(); x != readdata.end(); ++x)
+					data.add(ICommand::RESULT_LABEL + ".ErrorScan", (*x));
+
+				return 1;
+			}
 
 		}
 	}
@@ -84,6 +98,18 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 		std::cout << "Error from RunParse: " << e.what() << "\n";
 	}
 	return 0;
+}
+
+
+
+
+
+void ICommand::lookForError(string login, string reqtimestr, vector<string>& readdata)
+{
+	ifstream log;
+	setLogOnTime(log, reqtimestr);
+
+	scanErrorInLog(log, login,readdata);
 }
 
 std::string ICommand::getStartSipLogCmd()
@@ -107,7 +133,7 @@ std::string ICommand::checkLineStatus(std::string statusCMD)
 	return output;
 }
 
-int ICommand::getLineLog(string login, string reqtimestr, std::vector<std::string>& pt)
+int ICommand::setLogOnTime(ifstream& log, string reqtimestr)
 {
 	ifstream log(getLogFilename());
 
@@ -118,15 +144,25 @@ int ICommand::getLineLog(string login, string reqtimestr, std::vector<std::strin
 		char data[10000];
 		std::streamoff ptr;
 		ptr = log.tellg();
-		if(!timestr.empty())
+		if (!timestr.empty())
 		{
 			while (log.getline(data, 8096))
 			{
 				if (strstr(data, timestr.c_str()) != nullptr)
-					break;
+					return 1;
 			}
 		}
+		return 0;
+	}
+}
+
+int ICommand::getLineLog(string login, string reqtimestr, std::vector<std::string>& pt)
+{
+		ifstream log;
+		if (setLogOnTime(log, reqtimestr) == 0)
+			return 0;
 		
+		char data[10000];
 
 		while (log.getline(data, 8096))
 		{

@@ -25,9 +25,9 @@ std::string testCommand::getLineStatusCMD(std::string login)
 
 bool testCommand::checkSipPacketBegin(std::string data)
 {
-	if ((data.compare(STARTPACKETSIGNATURE1) == 0) ||
-		(data.compare(STARTPACKETSIGNATURE2) == 0) ||
-		(data.compare(STARTPACKETSIGNATURE3) == 0) || (data.compare(STARTPACKETSIGNATURE4) == 0))
+	if ((data.find(STARTPACKETSIGNATURE1)!= string::npos) ||
+		(data.find(STARTPACKETSIGNATURE2) != string::npos) ||
+		(data.find(STARTPACKETSIGNATURE3) != string::npos) || (data.find(STARTPACKETSIGNATURE4) != string::npos))
 		return true;
 		
 	return false;
@@ -41,6 +41,35 @@ bool testCommand::checkSipPacketEnd(std::string data)
 
 
 
+void testCommand::scanErrorInLog(std::ifstream& log, std::string login, std::vector<string>& pt)
+{
+	DnsError(log, login, pt);
+}
+
+void testCommand::DnsError(std::ifstream& log, std::string login, std::vector<string>& pt)
+{
+	auto position = log.tellg();
+	const int buflength = 10000;
+	char data[buflength];
+
+	const std::string label = "Failed Registration with status DNS Error";
+	const std::string errorDescription = "DNS error - can not resolve hostname";
+
+	while (log.getline(data, buflength))
+	{
+		if(login.find(data)!= string::npos)
+			if (label.find(data) != string::npos)
+			{
+				pt.push_back(errorDescription);
+				pt.push_back(data);
+				break;
+			}
+
+	}
+
+	log.seekg(position, SEEK_CUR);
+
+}
 
 
 std::string testCommand::SayHello()
