@@ -38,23 +38,23 @@ void ICommand::getCallData(std::ifstream& log,std::string& numFrom,std::string& 
 	    string datastr = buf;
 	    if (datastr.find(fromField) != string::npos)
 	    {
-		std::cout<<"FROM FIELD\n"<<datastr<<"\n";
-		auto numBeginPosition = datastr.find(numBegin) + numBegin.length();
-		auto numEndPosition = datastr.find(numEnd);
+			std::cout<<"FROM FIELD\n"<<datastr<<"\n";
+			auto numBeginPosition = datastr.find(numBegin) + numBegin.length();
+			auto numEndPosition = datastr.find(numEnd);
 	
-		numFrom  = datastr.substr(numBeginPosition, numEndPosition - numBeginPosition);
-		std::cout<<numFrom<<"\n";
+			numFrom  = datastr.substr(numBeginPosition, numEndPosition - numBeginPosition);
+			std::cout<<numFrom<<"\n";
 			
 	    }
 	    else if (datastr.find(callIdField) != string::npos)
 	    {
-		std::cout<<"CALLID FIELD\n"<<datastr<<"\n";
+			std::cout<<"CALLID FIELD\n"<<datastr<<"\n";
 			
-		auto callIdBeginPosition = datastr.find(callIdBegin) + callIdBegin.length();
-		auto callIdEndPosition = datastr.find(callIdEnd);
+			auto callIdBeginPosition = datastr.find(callIdBegin) + callIdBegin.length();
+			auto callIdEndPosition = datastr.find(callIdEnd);
 
-		callId  = datastr.substr(callIdBeginPosition, callIdEndPosition - callIdBeginPosition);
-		std::cout<<callId<<"\n";
+			callId  = datastr.substr(callIdBeginPosition, callIdEndPosition - callIdBeginPosition);
+			std::cout<<callId<<"\n";
 			
 	    }
 			    
@@ -128,20 +128,20 @@ bool ICommand::getIncomeCallList(std::string login,vector<string>& list)
 			    if(datastr.find(callBeginStr)!=string::npos)
 			    {
 				
-				string channelDescr = "";
-				string channelSignature = "";
+					string channelDescr = "";
+					string channelSignature = "";
 				
-				getCallData(log,numFrom,callId);	
-				channelSignature = getChannel(log,numFrom,channelDescr);
-				string reportLine = callTime + " " + login + " " + numFrom + " "+callId+" descr = ["+channelDescr+"] signature = ["+channelSignature+"]";
-				std::cout<<"\n"<<reportLine<<"\n";
-				list.push_back(reportLine);
-				break;
+					getCallData(log,numFrom,callId);	
+					channelSignature = getChannel(log,numFrom,channelDescr);
+					string reportLine = callTime + " " + login + " " + numFrom + " "+callId+" descr = ["+channelDescr+"] signature = ["+channelSignature+"]";
+					std::cout<<"\n"<<reportLine<<"\n";
+					list.push_back(reportLine);
+					break;
 			    }
 			    else if(datastr.find(callBeginStrAny)!=string::npos)
-				break;
+					break;
 			    else if(checkSipPacketEnd(datastr))
-				break;
+					break;
 			}    
 		}
 	}
@@ -235,6 +235,33 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 
 				return 1;
 			}
+			if (command.compare("getCallLogFull") == 0)
+			{
+				string channel = data.get<std::string>("ChannelSignature", "");
+
+				vector<string> readdata;
+
+				std::cout << "ErrorSearch start\n";
+				getCallLog(channel, readdata);
+
+				reportList(readdata, data, "NOT CALLS FOUND");
+
+				return 1;
+			}
+			if (command.compare("getCallLogPartial") == 0)
+			{
+				string channel = data.get<std::string>("ChannelSignature", "");
+				string reqtimestr = data.get<std::string>("RequestTime", "");
+
+				vector<string> readdata;
+
+				std::cout << "ErrorSearch start\n";
+				getCallLogPartial(channel,reqtimestr, readdata);
+
+				reportList(readdata, data, "NOT CALLS FOUND");
+
+				return 1;
+			}
 
 		}
 	}
@@ -244,7 +271,54 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 	}
 	return 0;
 }
+void ICommand::getCallLogPartial(string channel, string reqtimestr, vector<string>& readdata)
+{
+	ifstream log;
+	log.open(getLogFilename());
 
+	const int linelength = 10000;
+	char buf[linelength];
+
+	while (log.getline(buf, linelength))
+	{
+		string datastr = buf;
+		if (datastr.find(reqtimestr) != string::npos)
+		{
+			while (log.getline(buf, linelength))
+			{
+				int readmode = 0;
+				datastr = buf;
+				if (datastr.find(channel) != string::npos)
+				{
+					readmode = 1;
+					readdata.push_back(datastr);
+				}
+				if (readmode)
+					return;
+
+			}
+		}
+
+	}
+
+}
+void ICommand::getCallLog(std::string channel, vector<string>& readdata)
+{
+	ifstream log;
+	log.open(getLogFilename());
+
+	const int linelength = 10000;
+	char buf[linelength];
+
+	while (log.getline(buf,linelength))
+	{ 
+		string datastr = buf;
+
+		if (datastr.find(channel) != string::npos)
+			readdata.push_back(datastr);
+	}
+
+}
 
 void ICommand::reportList(vector<string>& readdata,boost::property_tree::ptree& data,string noanswer)
 {

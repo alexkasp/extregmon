@@ -10,7 +10,8 @@ class ICommand
 	void reportList(vector<string>& readdata,boost::property_tree::ptree& data,string noanswer);
 	void getCallData(std::ifstream& log,std::string& numFrom,std::string& callId);
 	std::string getChannel(std::ifstream& log,std::string numFrom,std::string& channelDescr);
-	
+	void getCallLog(std::string channel, vector<string>& readdata);
+	void getCallLogPartial(string channel, string reqtimestr, vector<string>& readdata);
 public:
 	static const std::string RESULT_LABEL;
 	ICommand();

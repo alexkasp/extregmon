@@ -24,6 +24,10 @@ namespace GUI.ViewModel
             commands.Add(new commandRule("getsiplogs","{\"Command\":\"GetSipLogs\",\"LineSipLogLogin\":\""));
             commands.Add(new commandRule("startlogcmd","{\"Command\":\"StartSipLogs\",\"FakeParam\":\""));
             commands.Add(new commandRule("ErrorSearch", "{\"Command\":\"ErrorSearch\",\"LineSipLogLogin\":\""));
+            commands.Add(new commandRule("getCalls", "{\"Command\":\"getCalls\",\"LineSipLogLogin\":\""));
+            commands.Add(new commandRule("getCallLogPartial", "{\"Command\":\"getCallLogPartial\",\"ChannelSignature\":\""));
+            commands.Add(new commandRule("getCallLogFull", "{\"Command\":\"getCallLogFull\",\"ChannelSignature\":\""));
+
             selectedCmd = commands.ElementAt<commandRule>(0);
        }
     }
