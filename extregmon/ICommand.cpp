@@ -21,56 +21,129 @@ ICommand::~ICommand()
 
 const std::string ICommand::RESULT_LABEL = "result";
 
+void ICommand::getCallData(std::ifstream& log,std::string& numFrom,std::string& callId)
+{
+    const int linelength = 10000;
+    char buf[linelength];
+    
+    const std::string fromField = "From: ";
+    const std::string callIdField = "Call-ID:";
+    const std::string numBegin = "<sip:";
+    const std::string numEnd = "@";
+    const std::string callIdBegin = callIdField;
+    const std::string callIdEnd = "@";
+
+    while (log.getline(buf, linelength))
+    {
+	    string datastr = buf;
+	    if (datastr.find(fromField) != string::npos)
+	    {
+		std::cout<<"FROM FIELD\n"<<datastr<<"\n";
+		auto numBeginPosition = datastr.find(numBegin) + numBegin.length();
+		auto numEndPosition = datastr.find(numEnd);
+	
+		numFrom  = datastr.substr(numBeginPosition, numEndPosition - numBeginPosition);
+		std::cout<<numFrom<<"\n";
+			
+	    }
+	    else if (datastr.find(callIdField) != string::npos)
+	    {
+		std::cout<<"CALLID FIELD\n"<<datastr<<"\n";
+			
+		auto callIdBeginPosition = datastr.find(callIdBegin) + callIdBegin.length();
+		auto callIdEndPosition = datastr.find(callIdEnd);
+
+		callId  = datastr.substr(callIdBeginPosition, callIdEndPosition - callIdBeginPosition);
+		std::cout<<callId<<"\n";
+			
+	    }
+			    
+	    if((!numFrom.empty())&&(!callId.empty()))
+	        break;
+    }	
+    
+    
+    return;
+}
+
+std::string ICommand::getChannel(std::ifstream& log,std::string numFrom,std::string& channelDescr)
+{
+    const std::string prefixchannelNewSignature = "New Channel ";
+    const std::string channelNewSignature = "sofia/external/";
+    const std::string channelFullSignature = prefixchannelNewSignature+channelNewSignature+numFrom;
+    const std::string channelDomainSignature = "@";
+    const std::string channelNameSignature = "[";
+    
+    const int linelength = 10000;
+    std::string datastr = "";
+    char buf[linelength];
+    
+    while(log.getline(buf,linelength))
+    {
+	datastr = buf;
+	auto channelFullNamePosition = datastr.find(channelFullSignature);
+	if(channelFullNamePosition!=string::npos)
+	{
+	    auto channelNamePosition = datastr.find(channelNewSignature);
+	    string parseStr = datastr.substr(channelNamePosition);
+	    
+	    auto channelSignaturePosition = parseStr.find(channelNameSignature);
+	    if(channelSignaturePosition!=string::npos)
+	    {
+		string channelSignature = parseStr.substr(channelSignaturePosition+1,parseStr.length()-channelSignaturePosition-2);
+		channelDescr = parseStr.substr(0,parseStr.length()-channelSignaturePosition-1);
+		std::cout<<" channelDescr "<<channelDescr<<"  "<<channelSignaturePosition<<"  "<<parseStr.length()<<"\n";
+		return channelSignature;
+	    }
+	}
+    }
+}
 
 bool ICommand::getIncomeCallList(std::string login,vector<string>& list)
 {
 	ifstream log;
 	log.open(getLogFilename());
 	const int linelength = 10000;
-	std::string callBeginStr = "INVITE sip:"+login;
-	std::string fromField = "From: ";
-	std::string numBegin = "<sip:";
-	std::string numEnd = "@";
+	const std::string callBeginStrAny = "INVITE sip:";
+	const std::string callBeginStr = "INVITE sip:"+login;
 
 	char buf[linelength];
-
+	std::cout<<"CallBeginStr = "<<callBeginStr<<"\n";
+	
 	while (log.getline(buf,linelength))
 	{
 		string datastr = buf;
-		if (checkSipPacketBegin(datastr))
+		if ((checkSipPacketBegin(datastr))&&(checkSipIncomeCall(datastr)))
 		{
 			std::string callTime = getTimeFromPacketBegin(datastr);
+			std::cout<<datastr<<"\n";
+			log.getline(buf,linelength);
 			
-
-			while (log.getline(buf, linelength))
+			while (log.getline(buf,linelength))
 			{
-				datastr = buf;
-
-				if (datastr.find(callBeginStr) != string::npos)
-				{
-					while (log.getline(buf, linelength))
-					{
-						datastr = buf;
-						if (datastr.find(fromField) == 0)
-						{
-							auto numBeginPosition = datastr.find(numBegin) + numBegin.length();
-							auto numEndPosition = datastr.find(numEnd);
-
-							string numFrom  = datastr.substr(numBeginPosition, numEndPosition - numBeginPosition);
-							string reportLine = callTime + " " + login + " " + numFrom;
-							list.push_back(reportLine);
-							break;
-
-						}
-					}
-					break;
-				}
-
-			}
+			    string numFrom="";
+			    string callId="";
+			
+			    datastr = buf;
+			    if(datastr.find(callBeginStr)!=string::npos)
+			    {
+				
+				string channelDescr = "";
+				string channelSignature = "";
+				
+				getCallData(log,numFrom,callId);	
+				channelSignature = getChannel(log,numFrom,channelDescr);
+				string reportLine = callTime + " " + login + " " + numFrom + " "+callId+" descr = ["+channelDescr+"] signature = ["+channelSignature+"]";
+				std::cout<<"\n"<<reportLine<<"\n";
+				list.push_back(reportLine);
+				break;
+			    }
+			    else if(datastr.find(callBeginStrAny)!=string::npos)
+				break;
+			    else if(checkSipPacketEnd(datastr))
+				break;
+			}    
 		}
-
-		
-
 	}
 
 	log.close();
@@ -260,7 +333,7 @@ int ICommand::getLineLog(string login, string reqtimestr, std::vector<std::strin
 			{
 				std::cout<<"We find line\n"<<data<<"\n";
 
-				if (strstr(data, "From:"))
+				if ((strstr(data, "From:"))||(strstr(data, "Call-ID:")))
 				{
 
 					int sendcounter = 0;

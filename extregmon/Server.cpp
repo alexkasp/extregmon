@@ -31,7 +31,7 @@ bool Server::startListen(int port)
 		if (commandtype == FREESWITCH_PBX_DETECTED)
 		{
 		    tc = new testCommand();
-		    std::cout<<"create freeswitch module\n";
+		    std::cout<<"create freeswitch module 2.1\n";
 		}
 		else if (commandtype == ASTER_PBX_DETECTED)
 		{

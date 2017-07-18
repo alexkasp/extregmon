@@ -21,6 +21,21 @@ std::string testCommand::getLineStatusCMD(std::string login)
 
 // scan log file for log with this line
 
+bool testCommand::checkSipIncomeCall(std::string line) 
+{
+    std::cout<<line<<"\n";
+    
+    const string INCOMESIPSIGNATURE = "recv";
+    if(line.find(INCOMESIPSIGNATURE)==0)
+    {
+	std::cout<<"INCOME CALL\n";
+    	return true;
+    }	
+    
+    std::cout<<"THIS IS NOT INCOMING\n";
+    return false;
+}
+
 bool testCommand::checkSipPacketBegin(std::string data)
 {
 	std::cout<<"checkSipPacketBegin\n";
@@ -41,9 +56,12 @@ bool testCommand::checkSipPacketEnd(std::string data)
 	return false;
 }
 
-std::string testCommand::getTimeFromPacketBegin(std::string)
+std::string testCommand::getTimeFromPacketBegin(std::string line)
 {
-	return "00:00:00 01/01/1970";
+	std::string beginDataSignature = " at ";
+	auto datePosition = line.find(beginDataSignature)+beginDataSignature.length();
+	std::string date = line.substr(datePosition,line.length()-datePosition-1);
+	return date;
 }
 
 void testCommand::scanErrorInLog(std::ifstream& log, std::string login, std::vector<string>& pt)

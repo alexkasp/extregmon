@@ -8,6 +8,9 @@ class ICommand
 {
 	int setLogOnTime(ifstream& log, string reqtimestr);
 	void reportList(vector<string>& readdata,boost::property_tree::ptree& data,string noanswer);
+	void getCallData(std::ifstream& log,std::string& numFrom,std::string& callId);
+	std::string getChannel(std::ifstream& log,std::string numFrom,std::string& channelDescr);
+	
 public:
 	static const std::string RESULT_LABEL;
 	ICommand();
@@ -41,6 +44,7 @@ public:
 	virtual std::string getLogFilename() = 0;
 	virtual bool checkSipPacketBegin(std::string line) = 0;
 	virtual bool checkSipPacketEnd(std::string line) = 0;
+	virtual bool checkSipIncomeCall(std::string line) = 0;
 	virtual std::string SayHello() = 0;
 	virtual std::string formateDateTime(std::tm tm) = 0;
 	virtual bool getIncomeCallList(std::string login,vector<string>& list);

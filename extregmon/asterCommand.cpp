@@ -53,7 +53,10 @@ bool asterCommand::checkSipPacketBegin(std::string line)
 	}
 	return false;
 }
-
+bool asterCommand::checkSipIncomeCall(std::string line)
+{
+    return false;
+}
 
 bool asterCommand::checkSipPacketEnd(std::string data)
 {
