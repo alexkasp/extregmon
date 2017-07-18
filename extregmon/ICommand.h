@@ -7,6 +7,7 @@ using namespace std;
 class ICommand
 {
 	int setLogOnTime(ifstream& log, string reqtimestr);
+	void reportList(vector<string>& readdata,boost::property_tree::ptree& data,string noanswer);
 public:
 	static const std::string RESULT_LABEL;
 	ICommand();
@@ -42,6 +43,7 @@ public:
 	virtual bool checkSipPacketEnd(std::string line) = 0;
 	virtual std::string SayHello() = 0;
 	virtual std::string formateDateTime(std::tm tm) = 0;
+	virtual bool getIncomeCallList(std::string login,vector<string>& list);
 	virtual void scanErrorInLog(std::ifstream& log, std::string login, std::vector<string>& pt) = 0;
 };
 

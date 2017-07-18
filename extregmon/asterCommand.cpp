@@ -48,6 +48,8 @@ bool asterCommand::checkSipPacketBegin(std::string line)
 	}
 	return false;
 }
+
+
 bool asterCommand::checkSipPacketEnd(std::string data)
 {
 	

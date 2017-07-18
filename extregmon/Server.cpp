@@ -62,6 +62,7 @@ bool Server::startListen(int port)
 				std::cout<<"run main loop\n";
 				while(MainLoop(socket, tc))
 				{
+					sleep(1);
 					boost::asio::write(socket, boost::asio::buffer("finish"), ignored_error);
 					std::cout<<"MOVE CICLE\n";
 				}
@@ -114,7 +115,7 @@ int Server::MainLoop(tcp::socket& socket, ICommand* module)
 	std::string message = "";
 	boost::property_tree::ptree pt;
 	boost::system::error_code ignored_error;
-
+	std::cout<<"now in mainloop...\n";
 	if(ParseToJson(socket, pt))
 	{
 		if(module->RunParse(pt))
@@ -122,6 +123,9 @@ int Server::MainLoop(tcp::socket& socket, ICommand* module)
 		   std::cout<<"TRUE ON RUN PARSE check\n"<<ICommand::RESULT_LABEL<<"\n";
 			BOOST_FOREACH(boost::property_tree::ptree::value_type &v, pt.get_child(ICommand::RESULT_LABEL))
 			{
+				std::cout<<"SEND size: "<<v.second.data().size()<<" ["<<v.second.data()<<"]\n";
+				if(v.second.data().size()==0)
+				    continue;
 				boost::asio::write(socket, boost::asio::buffer(v.second.data()), ignored_error);
 				string answer = readStringFromSocket(socket);
 				if (answer == "break")
@@ -135,29 +139,38 @@ int Server::MainLoop(tcp::socket& socket, ICommand* module)
 		else
 		    std::cout<<"FALSE ON RUN PARSE\n";
 	}
+	std::cout<<"Wrong Json\n";
 	return 0;
 }
 
 std::string Server::readStringFromSocket(tcp::socket& socket)
 {
+	std::cout<<"this is readStringFromSocket\n"<<endl;
 	boost::asio::streambuf input;
 	boost::system::error_code ignored_error;
 
+	std::cout<<"ReadUntil in readstring...";
 	size_t size = boost::asio::read_until(socket, input, "\r\n", ignored_error);
+	std::cout<<"OK\n";
 	string str(boost::asio::buffers_begin(input.data()), boost::asio::buffers_begin(input.data()) + input.size());
 	input.consume(size);
-
+	
+//	string str="Error\n";
+	std::cout<<"STR= "<<str<<"\n";
 	return str;
 }
 
 int Server::ParseToJson(tcp::socket& socket, boost::property_tree::ptree& pt)
 {
+	std::cout<<"ParseToJson\n";
 	std::stringstream ss;
 	boost::asio::streambuf input;
 	boost::system::error_code ignored_error;
 	try
-	{
+	{	
+		std::cout<<"beforReadStr\n";
 		ss << readStringFromSocket(socket);
+		std::cout<<"ParseToJson "<<ss.str()<<"\n";
 		boost::property_tree::read_json(ss, pt);
 		return 1;
 	}

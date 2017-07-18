@@ -22,7 +22,10 @@ ICommand::~ICommand()
 const std::string ICommand::RESULT_LABEL = "result";
 
 
-
+bool ICommand::getIncomeCallList(std::string login,vector<string>& list)
+{
+    return false;
+}
 
 // get output from command execution in shell
 string ICommand::getConsoleOutput(string command)
@@ -52,6 +55,7 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 	try
 	{
 		string command = data.get<std::string>("Command", "");
+		std::cout<<"RunParse "<<command<<"\n";
 		if (!command.empty())
 		{
 			if (command.compare("LineStatus") == 0)
@@ -73,19 +77,7 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 				vector<string> readdata;
 
 				getLineLog(login, reqtimestr,readdata);
-				if(readdata.size()>0)
-				{
-				    for (auto x = readdata.begin(); x != readdata.end(); ++x)
-					    data.add(ICommand::RESULT_LABEL+".log", (*x));
-				}
-				else
-				    data.add(ICommand::RESULT_LABEL+".log","NOT FOUND LOGS");
-
-
-
-
-				
-
+				reportList(readdata,data,"NOT FOUND LOGS");
 				return 1;
 			}
 			if (command.compare("StartSipLogs") == 0)
@@ -100,11 +92,11 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 
 				vector<string> readdata;
 
+				std::cout<<"ErrorSearch start\n";
 				lookForError(login, reqtimestr,readdata);
-
-				for (auto x = readdata.begin(); x != readdata.end(); ++x)
-					data.add(ICommand::RESULT_LABEL + ".ErrorScan", (*x));
-
+				
+				reportList(readdata,data,"NOT FOUND ERRORS");
+				
 				return 1;
 			}
 
@@ -118,6 +110,19 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 }
 
 
+void ICommand::reportList(vector<string>& readdata,boost::property_tree::ptree& data,string noanswer)
+{
+    if(readdata.size()>0)
+    {
+        for (auto x = readdata.begin(); x != readdata.end(); ++x)
+        {
+    		std::cout<<"Add to ptree: \n"<<(*x)<<"\n";
+		data.add(ICommand::RESULT_LABEL + ".log", (*x));
+	}	
+    }
+    else
+        data.add(ICommand::RESULT_LABEL+".log",noanswer);
+}
 
 
 
@@ -152,7 +157,7 @@ std::string ICommand::checkLineStatus(std::string statusCMD)
 
 int ICommand::setLogOnTime(ifstream& log, string reqtimestr)
 {
-	ifstream log(getLogFilename());
+	log.open(getLogFilename());
 
 	std::string timestr = getTimeStr(reqtimestr);
 	std::cout<<"THIS TIME STR "<<timestr<<"\n";
@@ -167,14 +172,10 @@ int ICommand::setLogOnTime(ifstream& log, string reqtimestr)
 			while (log.getline(data, 8096))
 			{
 				if (strstr(data, timestr.c_str()) != nullptr)
-<<<<<<< HEAD
 				{
-				    std::cout<<"We find time \n"<<data<<"\n";
 					break;
 				}	
-=======
 					return 1;
->>>>>>> 4dde6cd0330e1287a71c224882803857e2f33005
 			}
 		}
 		return 0;
@@ -220,7 +221,7 @@ int ICommand::getLineLog(string login, string reqtimestr, std::vector<std::strin
 		log.clear();
 
 
-	}
+	
 	return 0;
 }
 

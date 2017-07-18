@@ -21,27 +21,14 @@ std::string testCommand::getLineStatusCMD(std::string login)
 
 // scan log file for log with this line
 
-
-
 bool testCommand::checkSipPacketBegin(std::string data)
 {
-<<<<<<< HEAD
 	std::cout<<"checkSipPacketBegin\n";
-	if ((data.find(STARTPACKETSIGNATURE1) > 0) ||
-		(data.find(STARTPACKETSIGNATURE2) > 0) ||
-		(data.find(STARTPACKETSIGNATURE3) > 0) || (data.find(STARTPACKETSIGNATURE4) > 0))
-		{
-		    std::cout<<"this is a begin sip packet\n"<<data<<"\n";
-		    return true;
-		}
-	std::cout<<"this is NOT a begin sip packet\n"<<data<<"\n";	
-=======
 	if ((data.find(STARTPACKETSIGNATURE1)!= string::npos) ||
 		(data.find(STARTPACKETSIGNATURE2) != string::npos) ||
 		(data.find(STARTPACKETSIGNATURE3) != string::npos) || (data.find(STARTPACKETSIGNATURE4) != string::npos))
 		return true;
 		
->>>>>>> 4dde6cd0330e1287a71c224882803857e2f33005
 	return false;
 }
 bool testCommand::checkSipPacketEnd(std::string data)
@@ -72,17 +59,19 @@ void testCommand::DnsError(std::ifstream& log, std::string login, std::vector<st
 
 	while (log.getline(data, buflength))
 	{
-		if(login.find(data)!= string::npos)
-			if (label.find(data) != string::npos)
+		string strdata = data;
+		
+		if(strdata.find(login)!= string::npos)
+			if (strdata.find(label) != string::npos)
 			{
 				pt.push_back(errorDescription);
-				pt.push_back(data);
+				pt.push_back(strdata);
 				break;
 			}
 
 	}
 
-	log.seekg(position, SEEK_CUR);
+	log.seekg(position, log.beg);
 
 }
 
