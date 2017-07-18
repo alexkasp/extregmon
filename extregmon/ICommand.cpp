@@ -57,6 +57,8 @@ bool ICommand::getIncomeCallList(std::string login,vector<string>& list)
 							auto numEndPosition = datastr.find(numEnd);
 
 							string numFrom  = datastr.substr(numBeginPosition, numEndPosition - numBeginPosition);
+							string reportLine = callTime + " " + login + " " + numFrom;
+							list.push_back(reportLine);
 							break;
 
 						}
@@ -145,6 +147,19 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 				
 				reportList(readdata,data,"NOT FOUND ERRORS");
 				
+				return 1;
+			}
+			if (command.compare("getCalls") == 0)
+			{
+				string login = data.get<std::string>("LineSipLogLogin", "");
+
+				vector<string> readdata;
+
+				std::cout << "ErrorSearch start\n";
+				getIncomeCallList(login, readdata);
+
+				reportList(readdata, data, "NOT CALLS FOUND");
+
 				return 1;
 			}
 
