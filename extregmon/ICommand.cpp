@@ -24,7 +24,55 @@ const std::string ICommand::RESULT_LABEL = "result";
 
 bool ICommand::getIncomeCallList(std::string login,vector<string>& list)
 {
-    return false;
+	ifstream log;
+	log.open(getLogFilename());
+	const int linelength = 10000;
+	std::string callBeginStr = "INVITE sip:"+login;
+	std::string fromField = "From: ";
+	std::string numBegin = "<sip:";
+	std::string numEnd = "@";
+
+	char buf[linelength];
+
+	while (log.getline(buf,linelength))
+	{
+		string datastr = buf;
+		if (checkSipPacketBegin(datastr))
+		{
+			std::string callTime = getTimeFromPacketBegin(datastr);
+			
+
+			while (log.getline(buf, linelength))
+			{
+				datastr = buf;
+
+				if (datastr.find(callBeginStr) != string::npos)
+				{
+					while (log.getline(buf, linelength))
+					{
+						datastr = buf;
+						if (datastr.find(fromField) == 0)
+						{
+							auto numBeginPosition = datastr.find(numBegin) + numBegin.length();
+							auto numEndPosition = datastr.find(numEnd);
+
+							string numFrom  = datastr.substr(numBeginPosition, numEndPosition - numBeginPosition);
+							break;
+
+						}
+					}
+					break;
+				}
+
+			}
+		}
+
+		
+
+	}
+
+	log.close();
+    return true;
 }
 
 // get output from command execution in shell

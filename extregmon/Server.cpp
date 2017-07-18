@@ -62,7 +62,7 @@ bool Server::startListen(int port)
 				std::cout<<"run main loop\n";
 				while(MainLoop(socket, tc))
 				{
-					sleep(1);
+					//sleep(1);
 					boost::asio::write(socket, boost::asio::buffer("finish"), ignored_error);
 					std::cout<<"MOVE CICLE\n";
 				}

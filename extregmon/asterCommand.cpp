@@ -11,6 +11,11 @@ asterCommand::~asterCommand()
 {
 }
 
+std::string asterCommand::getTimeFromPacketBegin(std::string)
+{
+	return "00:00:00 01/01/1970";
+}
+
 void asterCommand::scanErrorInLog(std::ifstream& log, std::string login, std::vector<string>& pt)
 {
 

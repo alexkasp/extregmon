@@ -31,12 +31,18 @@ namespace GUI.ViewModel
 
         public ServerViewModel()
         {
-
             servers = new ObservableCollection<ExtregClient>();
-            servers.Add(new ExtregClient("212.193.100.94","extreg03"));
-            servers.Add(new ExtregClient("212.193.100.95","extreg04"));
-            servers.Add(new ExtregClient("212.193.100.96","extreg05"));
-            servers.Add(new ExtregClient("212.193.100.97","extreg07"));
+            bool test = false;// true;
+            if(!test)
+            {
+               
+              //  servers.Add(new ExtregClient("212.193.100.94", "extreg03"));
+              //  servers.Add(new ExtregClient("212.193.100.95", "extreg07"));
+                servers.Add(new ExtregClient("212.193.100.96", "extreg04"));
+             //   servers.Add(new ExtregClient("212.193.100.97", "extreg05"));
+            }
+            else
+              servers.Add(new ExtregClient("212.193.100.65", "test"));
 
             selectedServer = servers.ElementAt<ExtregClient>(0);
         }

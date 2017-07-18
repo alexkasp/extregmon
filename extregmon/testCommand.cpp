@@ -41,7 +41,10 @@ bool testCommand::checkSipPacketEnd(std::string data)
 	return false;
 }
 
-
+std::string testCommand::getTimeFromPacketBegin(std::string)
+{
+	return "00:00:00 01/01/1970";
+}
 
 void testCommand::scanErrorInLog(std::ifstream& log, std::string login, std::vector<string>& pt)
 {

@@ -66,5 +66,6 @@ public:
 	virtual std::string getLogFilename();
 	virtual std::string formateDateTime(std::tm tm);
 	virtual void scanErrorInLog(std::ifstream& log, std::string login,std::vector<string>& pt);
+	virtual std::string getTimeFromPacketBegin(std::string);
 };
 

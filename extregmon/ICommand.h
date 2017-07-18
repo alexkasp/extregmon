@@ -45,5 +45,6 @@ public:
 	virtual std::string formateDateTime(std::tm tm) = 0;
 	virtual bool getIncomeCallList(std::string login,vector<string>& list);
 	virtual void scanErrorInLog(std::ifstream& log, std::string login, std::vector<string>& pt) = 0;
+	virtual std::string getTimeFromPacketBegin(std::string) = 0;
 };
 

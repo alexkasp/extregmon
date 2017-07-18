@@ -43,6 +43,7 @@ namespace GUI
 
             string message = "";
             connect(servaddr, ref message);
+            recvAnswer(ref message);
         }
 
         public bool connect(string servaddr,ref string message)
@@ -81,7 +82,7 @@ namespace GUI
                             return true;
                       
                         answerList.Add(answer);
-                        sendCommand("next", ref answer);
+                        sendCommand("{\"Wait for\":\"next\"}", ref answer);
 
                     } while (recvAnswer(ref answer));
                 }
