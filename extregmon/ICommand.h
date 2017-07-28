@@ -11,7 +11,9 @@ class ICommand
 	void getCallData(std::ifstream& log,std::string& numFrom,std::string& callId);
 	std::string getChannel(std::ifstream& log,std::string numFrom,std::string& channelDescr);
 	void getCallLog(std::string channel, vector<string>& readdata);
-	void getCallLogPartial(string channel, string reqtimestr, vector<string>& readdata);
+	size_t getCallLogPartial(string channel, string reqtimestr, vector<string>& readdata);
+	size_t getCallLogPartial(string channel, size_t position, vector<string>& readdata);
+	void getCallPartial(string channel,ifstream& log,vector<string>& readdata);
 public:
 	static const std::string RESULT_LABEL;
 	ICommand();

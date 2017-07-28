@@ -38,7 +38,7 @@ bool testCommand::checkSipIncomeCall(std::string line)
 
 bool testCommand::checkSipPacketBegin(std::string data)
 {
-	std::cout<<"checkSipPacketBegin\n";
+//	std::cout<<"checkSipPacketBegin\n";
 	if ((data.find(STARTPACKETSIGNATURE1)!= string::npos) ||
 		(data.find(STARTPACKETSIGNATURE2) != string::npos) ||
 		(data.find(STARTPACKETSIGNATURE3) != string::npos) || (data.find(STARTPACKETSIGNATURE4) != string::npos))

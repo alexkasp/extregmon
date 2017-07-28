@@ -242,7 +242,7 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 
 				vector<string> readdata;
 
-				std::cout << "ErrorSearch start\n";
+				std::cout << "getCallLogFull start\n";
 				getCallLog(channel, readdata);
 
 				reportList(readdata, data, "NOT CALLS FOUND");
@@ -256,11 +256,27 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 
 				vector<string> readdata;
 
-				std::cout << "ErrorSearch start\n";
-				getCallLogPartial(channel,reqtimestr, readdata);
+				std::cout << "getCallLogPartial start\n";
+				size_t position = getCallLogPartial(channel,reqtimestr, readdata);
 
 				reportList(readdata, data, "NOT CALLS FOUND");
+				
+				data.add(ICommand::RESULT_LABEL+".log",position);
+				return 1;
+			}
+			if (command.compare("getCallLogPartialPosition") == 0)
+			{
+				string channel = data.get<std::string>("ChannelSignature", "");
+				size_t position = data.get<std::size_t>("RequestTime", 0);
 
+				vector<string> readdata;
+
+				std::cout << "getCallLogPartial start\n";
+				size_t newposition = getCallLogPartial(channel,position, readdata);
+
+				reportList(readdata, data, "NOT CALLS FOUND");
+				
+				data.add(ICommand::RESULT_LABEL+".log",newposition);
 				return 1;
 			}
 
@@ -272,37 +288,86 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 	}
 	return 0;
 }
-void ICommand::getCallLogPartial(string channel, string reqtimestr, vector<string>& readdata)
+size_t ICommand::getCallLogPartial(string channel, string reqtimestr, vector<string>& readdata)
 {
 	ifstream log;
 	log.open(getLogFilename());
-
+	
+	std::cout<<"getCallLogPartial channel = "<<channel<<" reqtimestr = "<<reqtimestr<<"\n";
+	
 	const int linelength = 10000;
 	char buf[linelength];
 
 	while (log.getline(buf, linelength))
 	{
 		string datastr = buf;
+		
 		if (datastr.find(reqtimestr) != string::npos)
 		{
-			while (log.getline(buf, linelength))
-			{
-				int readmode = 0;
-				datastr = buf;
-				if (datastr.find(channel) != string::npos)
-				{
-					readmode = 1;
-					readdata.push_back(datastr);
-				}
-				if (readmode)
-					return;
-
-			}
+			LineBackLog(log);
+			getCallPartial(channel,log,readdata);
+			break;
 		}
 
 	}
+	size_t curPosition = log.tellg();
+	log.close();
+	return curPosition;
 
 }
+
+size_t ICommand::getCallLogPartial(string channel, size_t position, vector<string>& readdata)
+{
+	ifstream log;
+	log.open(getLogFilename());
+	
+	const int linelength = 10000;
+	char buf[linelength];
+
+	log.seekg(position);
+	
+	string datastr = buf;
+	getCallPartial(channel,log,readdata);
+
+	
+	
+	size_t curPosition = log.tellg();
+	log.close();
+	return curPosition;
+
+}
+
+void ICommand::getCallPartial(string channel,ifstream& log,vector<string>& readdata)
+{
+    int readmode = 0;
+    const int linelength = 10000;
+    char buf[linelength];
+
+    std::cout<<"Partial - search for call log\n";
+    string datastr="";
+    int i = 0;
+    
+    while (log.getline(buf, linelength))
+    {
+	datastr = buf;
+	if(i++<10)
+	    std::cout<<datastr<<"\n";
+	
+	if (datastr.find(channel) != string::npos)
+	{
+	    if(i++<10)
+		std::cout<<"["<<datastr<<"]\n";
+	    readmode = 1;
+	    readdata.push_back(datastr);
+	}
+	else if (readmode)
+	    break;
+
+	}
+	
+	return;
+}
+
 void ICommand::getCallLog(std::string channel, vector<string>& readdata)
 {
 	ifstream log;
@@ -400,10 +465,16 @@ int ICommand::getLineLog(string login, string reqtimestr, std::vector<std::strin
 			return 0;
 		
 		char data[10000];
-
+		std::string callTime="";
 		while (log.getline(data, 8096))
 		{
-
+			
+			if(checkSipPacketBegin(data))
+			{
+			    std::cout<<"get Time from "<<data<<"\n";
+			     callTime = getTimeFromPacketBegin(data);
+			     std::cout<<"Time is "<<callTime<<"\n";
+			}
 			if (strstr(data, login.c_str()))
 			{
 				std::cout<<"We find line\n"<<data<<"\n";
@@ -413,7 +484,14 @@ int ICommand::getLineLog(string login, string reqtimestr, std::vector<std::strin
 
 					int sendcounter = 0;
 					if (SetPositionToBeginSipHeader(log, sendcounter))
+					{
+						
+						
+						pt.push_back("event time: "+callTime);
+						
+						std::cout<<"SendSipPacket\n";
 						SendSipPacket(log, sendcounter, pt);
+					}
 					else
 					{
 						break;
@@ -447,9 +525,10 @@ int ICommand::SendSipPacket(std::ifstream& log, int sendcounter, std::vector<std
 	while (log.getline(data, 8096))
 	{
 
-
+		std::cout<<"[ "<<data<<"]\n";
 		if((this->checkSipPacketEnd(data)))
 		{
+			std::cout<<"END PACKET\n";
 			return 1;
 		}
 		--sendcounter;
