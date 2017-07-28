@@ -27,7 +27,7 @@ namespace GUI.ViewModel
             commands.Add(new commandRule("getCalls", "{\"Command\":\"getCalls\",\"LineSipLogLogin\":\""));
             commands.Add(new commandRule("getCallLogPartial", "{\"Command\":\"getCallLogPartial\",\"ChannelSignature\":\""));
             commands.Add(new commandRule("getCallLogFull", "{\"Command\":\"getCallLogFull\",\"ChannelSignature\":\""));
-
+            commands.Add(new commandRule("getCallLogPartialPosition", "{\"Command\":\"getCallLogPartialPosition\",\"ChannelSignature\":\""));
             selectedCmd = commands.ElementAt<commandRule>(0);
        }
     }

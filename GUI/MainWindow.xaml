@@ -16,20 +16,21 @@
         <commands:ServerViewModel x:Key="ServersList"></commands:ServerViewModel>
     </Window.Resources>
     <Grid>
-        
+
         <Grid.Resources>
-            
+
         </Grid.Resources>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="46*"/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="22*"/>
+            <ColumnDefinition Width="35*"/>
+            <ColumnDefinition Width="7*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="65"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="12.218"/>
         </Grid.RowDefinitions>
-        <Button x:Name="button1" Content="Run" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="667,37,0,0" Click="button1_Click" Height="20"/>
+        <Button x:Name="button1" Content="Run" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="4,37,0,0" Click="button1_Click" Height="20" Grid.Column="2"/>
         <ComboBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="1,37,0,0" VerticalAlignment="Top" Width="254" IsReadOnly="False" IsEditable="True" ItemsSource="{Binding Source={StaticResource CommandsList}, Path=commands}" 
                   SelectedItem="{Binding Source={StaticResource CommandsList}, Path=selectedCmd}">
 
@@ -41,8 +42,8 @@
             </ComboBox.ItemTemplate>
 
         </ComboBox>
-        <Button x:Name="button2" Content="Clear" HorizontalAlignment="Left" Margin="667,10,0,0" VerticalAlignment="Top" Width="75" Click="button2_Click"/>
-        <RichTextBox x:Name="richTextBox" Grid.Row="1" Grid.ColumnSpan="2">
+        <Button x:Name="button2" Content="Clear" HorizontalAlignment="Left" Margin="4,12,0,0" VerticalAlignment="Top" Width="75" Click="button2_Click" Grid.Column="2" Height="20"/>
+        <RichTextBox x:Name="richTextBox" Grid.Row="1" Grid.ColumnSpan="3">
             <FlowDocument>
                 <Paragraph>
                     <Run Text=""/>
@@ -50,16 +51,16 @@
             </FlowDocument>
         </RichTextBox>
 
-        <ComboBox x:Name="comboBox1" HorizontalAlignment="Left" Margin="540,38,0,0" VerticalAlignment="Top" Width="122" 
-                  ItemsSource="{Binding Source={StaticResource ServersList},Path=servers}" SelectedItem="{Binding Source={StaticResource ServersList},Path=selectedServer}">
+        <ComboBox x:Name="comboBox1" HorizontalAlignment="Left" Margin="288,33,0,0" VerticalAlignment="Top" Width="122" 
+                  ItemsSource="{Binding Source={StaticResource ServersList},Path=servers}" SelectedItem="{Binding Source={StaticResource ServersList},Path=selectedServer}" Grid.Column="1" Height="22">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Path=name}"></TextBlock>
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
-        <TextBox x:Name="textBox1" HorizontalAlignment="Left" Height="23" Margin="260,38,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="155" TextChanged="textBox1_TextChanged"/>
-        <Label x:Name="label" Content="параметр" HorizontalAlignment="Left" Margin="293,9,0,0" VerticalAlignment="Top" Width="155" Height="23"/>
-        <TextBox x:Name="textBox2" HorizontalAlignment="Left" Height="23" Margin="420,37,0,0" TextWrapping="Wrap" Text="{Binding Source={x:Static System:DateTime.Now}, Mode=OneWay,  StringFormat='yyyy-MM-dd HH:mm:ss'}" VerticalAlignment="Top" Width="115"/>
+        <TextBox x:Name="textBox1" HorizontalAlignment="Left" Height="23" Margin="10,37,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="155" TextChanged="textBox1_TextChanged" Grid.Column="1"/>
+        <Label x:Name="label" Content="параметр" HorizontalAlignment="Left" Margin="0,9,0,0" VerticalAlignment="Top" Width="155" Height="23" Grid.Column="1"/>
+        <TextBox x:Name="textBox2" HorizontalAlignment="Left" Height="23" Margin="169,37,0,0" TextWrapping="Wrap" Text="{Binding Source={x:Static System:DateTime.Now}, Mode=OneWay,  StringFormat='yyyy-MM-dd HH:mm:ss'}" VerticalAlignment="Top" Width="115" Grid.Column="1"/>
     </Grid>
 </Window>

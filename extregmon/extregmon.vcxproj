@@ -72,6 +72,10 @@
     <IncludePath>D:\distrib\boost_1_64_0;$(IncludePath)</IncludePath>
     <LibraryPath>D:\boost\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>D:\distrib\boost_1_64_0;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\distrib\boost_1_64_0\stage\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
