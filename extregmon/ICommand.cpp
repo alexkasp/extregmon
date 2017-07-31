@@ -356,7 +356,7 @@ void ICommand::getCallPartial(string channel,ifstream& log,vector<string>& readd
 	if (datastr.find(channel) != string::npos)
 	{
 	    if(i++<10)
-		std::cout<<"["<<datastr<<"]\n";
+			std::cout<<"["<<datastr<<"]\n";
 	    readmode = 1;
 	    readdata.push_back(datastr);
 	}
