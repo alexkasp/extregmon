@@ -11,6 +11,13 @@ asterCommand::~asterCommand()
 {
 }
 
+bool asterCommand::getTimeFromLine(std::string line, std::string& timestr)
+{
+	timestr =  "00:00:00 01/01/1970";
+	return false;
+}
+
+
 std::string asterCommand::getTimeFromPacketBegin(std::string)
 {
 	return "00:00:00 01/01/1970";

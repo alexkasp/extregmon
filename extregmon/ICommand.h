@@ -6,6 +6,8 @@
 using namespace std;
 class ICommand
 {
+	static const int LINELENGTH;
+
 	int setLogOnTime(ifstream& log, string reqtimestr);
 	void reportList(vector<string>& readdata,boost::property_tree::ptree& data,string noanswer);
 	void getCallData(std::ifstream& log,std::string& numFrom,std::string& callId);
@@ -14,6 +16,7 @@ class ICommand
 	size_t getCallLogPartial(string channel, string reqtimestr, vector<string>& readdata);
 	size_t getCallLogPartial(string channel, size_t position, vector<string>& readdata);
 	void getCallPartial(string channel,ifstream& log,vector<string>& readdata);
+	
 public:
 	static const std::string RESULT_LABEL;
 	ICommand();
@@ -40,7 +43,8 @@ public:
 	int SendSipPacket(std::ifstream& log, int sendcounter, std::vector<std::string>& pt);
 	void lookForError(string login, string reqtimestr, vector<string>& readdata);
 	int LineBackLog(std::ifstream& log);
-
+	std::string getPrevTime(ifstream& log);
+	std::string getNextTime(ifstream& log);
 
 	virtual std::string getStartSipLogCmd();
 	virtual std::string getLineStatusCMD(std::string login) = 0;
@@ -53,5 +57,7 @@ public:
 	virtual bool getIncomeCallList(std::string login,vector<string>& list);
 	virtual void scanErrorInLog(std::ifstream& log, std::string login, std::vector<string>& pt) = 0;
 	virtual std::string getTimeFromPacketBegin(std::string) = 0;
+	virtual bool getTimeFromLine(std::string line,std::string& timestr) = 0;
+
 };
 

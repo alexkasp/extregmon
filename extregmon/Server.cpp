@@ -6,6 +6,7 @@
 #include <boost/foreach.hpp>
 #include <fstream>
 
+
 #define ASTER_PBX_DETECTED 1
 #define FREESWITCH_PBX_DETECTED 2
 

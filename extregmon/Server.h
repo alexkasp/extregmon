@@ -4,8 +4,14 @@
 #include <ctime>
 #include <iostream>
 #include <string>
+
+#ifdef __linux__
 #include <boost/asio.hpp>
 #include <boost/asio/io_service.hpp>
+#else
+#include <boost\asio.hpp>
+#include <boost\asio\io_service.hpp>
+#endif
 #include "ICommand.h"
 
 

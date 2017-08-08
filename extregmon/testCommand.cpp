@@ -12,9 +12,40 @@ testCommand::~testCommand()
 {
 }
 
+bool testCommand::getTimeFromLine(std::string line, std::string& timestr)
+{
+	const string datetimeexample = "2017-08-04 12:03:31.822602";
+	if (line.length() > datetimeexample.length())
+	{
+
+		auto afterchannelsignature = line.find_first_of(' ');
+
+		if (afterchannelsignature > 0)
+		{
+
+			if (line.at(afterchannelsignature + 1 + 4) != '-')
+				return false;
+			if (line.at(afterchannelsignature + 1 + 4 + 3) != '-')
+				return false;
+			if (line.at(afterchannelsignature + 1 + 4 + 3 + 3) != ' ')
+				return false;
+			if (line.at(afterchannelsignature + 1 + 4 + 3 + 3 + 3) != ':')
+				return false;
+			if (line.at(afterchannelsignature + 1 + 4 + 3 + 3 + 3 + 3) != ':')
+				return false;
+			if (line.at(afterchannelsignature + 1 + 4 + 3 + 3 + 3 + 3 + 3) == '.')
+			{
+				timestr = line.substr(afterchannelsignature + 1, datetimeexample.length());
+				return true;
+			}
+		}
+	}
+	return false;
+}
 
 std::string testCommand::getLineStatusCMD(std::string login)
 {
+	
 
 	return "/etc/freeswitch/cli_args \'sofia status gateway\'|grep " + login;
 }

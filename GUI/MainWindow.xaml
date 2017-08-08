@@ -17,10 +17,7 @@
         <commands:ServerViewModel x:Key="ServersList"></commands:ServerViewModel>
     </Window.Resources>
     
-    <!--   <Window.Resources>
-        <commands:CommandViewModel x:Key="CommandsList" ></commands:CommandViewModel>
-        
-    </Window.Resources>-->
+   
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="22*"/>
@@ -64,15 +61,7 @@
 
         <TextBox x:Name="textBox2" HorizontalAlignment="Left" Height="23" Margin="10,38,0,0" TextWrapping="Wrap" Text="{Binding Source={x:Static System:DateTime.Now}, Mode=OneWay,  StringFormat='yyyy-MM-dd HH:mm:ss'}" VerticalAlignment="Top" Width="115" Grid.Column="1"/>
 
-        <!--
-        
-       
-      
-        
-       
-
-     
-        -->
+   
 
     </Grid>
 

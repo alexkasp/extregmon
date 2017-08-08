@@ -20,6 +20,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="testParam.xml" />
+    <Text Include="freeswitch.log" />
   </ItemGroup>
 </Project>

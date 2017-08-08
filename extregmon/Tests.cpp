@@ -1,71 +1,58 @@
+#define BOOST_TEST_MAIN
 #define BOOST_TEST_MODULE My Test 
+#define BOOST_LIB_DIAGNOSTIC
+
+#include <boost/test/unit_test.hpp>
+
 
 #include "Server.h"
 #include <fstream>
 #include "testCommand.h"
-#include <boost/test/included/unit_test.hpp> 
 
 
-BOOST_AUTO_TEST_CASE(getCommandType_test)
+BOOST_AUTO_TEST_CASE(getTimeFromLine_testCommand)
 {
-	Server srv;
-	//srv.startListen(7542);
-	std::ofstream testParam("testParamOne.php",std::ofstream::trunc);
-	testParam << "public static $pbxtype='aster';";
-	testParam.close();
-	int rettype = srv.getCommandType("testParamOne.php", "pbxtype");
-	BOOST_TEST(rettype == 1);
+	string badline = "c9ed99a4-78f3-11e7-bde1-0177bd11a386 o=FreeSWITCH 1501826703 1501826704 IN IP4 212.193.100.96";
+	string goodline = "c9ed99a4-78f3-11e7-bde1-0177bd11a386 2017-08-04 12:03:31.822602 [DEBUG] switch_core_state_machine.c:40 sofia/external/148695_id40793@212.193.100.168 Standard INIT";
 
-	testParam.open("testParamOne.php", std::ofstream::trunc);
-	testParam << "public static $pbxtype='extreg';";
-	testParam.close();
-	rettype = srv.getCommandType("testParamOne.php", "pbxtype");
-	BOOST_TEST(rettype == 2);
-
-}
-
-BOOST_AUTO_TEST_CASE(lineBackLog)
-{
-	char buf[1024];
-	char tmpbuf[1024];
-	ofstream test("lineBackLogTest", fstream::trunc);
-	BOOST_ASSERT(test);
-
-	string check1 = "line1 - should be last";
-	string check2 = "line2 - middle";
-	string check3 = "line3 - first";
-
-	test.write(check1.c_str(),check1.length());
-	test.write(check2.c_str(),check2.length());
-	test.write(check3.c_str(),check3.length());
-	test.close();
-
-	ifstream testi("lineBackLogTest");
-	for (auto i = 0; i < 3; ++i)
-		testi.getline(tmpbuf, 1024);
+	string parsedLine = "";
 
 	testCommand tc;
 
-	tc.LineBackLog(testi);
-	testi.getline(buf, 1024);
-	std::cout << buf << "\n";
-	std::string tmp = std::string(buf);
-	BOOST_TEST(check3 == tmp);
+	BOOST_REQUIRE(tc.getTimeFromLine(goodline,parsedLine));
+	BOOST_CHECK_EQUAL(parsedLine.compare("2017-08-04 12:03:31.822602"),0);
+	BOOST_REQUIRE(!tc.getTimeFromLine(badline, parsedLine));
+}
 
-	tc.LineBackLog(testi);
-	tc.LineBackLog(testi);
-	testi.getline(buf, 1024);
-	std::cout << buf << "\n";
-	std::string tmp1 = std::string(buf);
-	BOOST_TEST(check2 == tmp1);
+BOOST_AUTO_TEST_CASE(getPrevDate_testCommand)
+{
+	testCommand tc;
+	ifstream log("freeswitch.log");
+	if (log.is_open())
+	{
+		log.seekg(0, std::ios_base::end);
+	
 
-	tc.LineBackLog(testi);
-	tc.LineBackLog(testi);
-	testi.getline(buf, 1024);
-	std::cout << buf << "\n";
-	std::string tmp2 = std::string(buf);
-	BOOST_TEST(check3 ==tmp2);
+		std::string time = tc.getPrevTime(log);
+		std::cout << time << "\n";
+		BOOST_CHECK_EQUAL(time.compare("2017-08-04 10:39:35.422608"), 0);
+	}
+	else
+		BOOST_ERROR("file not open!!!");
+}
 
+BOOST_AUTO_TEST_CASE(getNextDate_testCommand)
+{
+	testCommand tc;
+	ifstream log("freeswitch.log");
+	if (log.is_open())
+	{
+		std::string time = tc.getNextTime(log);
+		std::cout << time << "\n";
+		BOOST_CHECK_EQUAL(time.compare("2017-08-04 09:56:41.502565"), 0);
+	}
+	else
+		BOOST_ERROR("file not open!!!");
 }
 
 BOOST_AUTO_TEST_CASE(pause)
@@ -74,3 +61,5 @@ BOOST_AUTO_TEST_CASE(pause)
 	std::cin >> a;
 
 }
+
+

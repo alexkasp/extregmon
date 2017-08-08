@@ -1,7 +1,7 @@
 #include "ICommand.h"
 #include <iostream>
 #include <boost/date_time/posix_time/posix_time.hpp>
-
+#include <boost/regex.hpp>
 #include <locale>
 
 #ifdef __linux__
@@ -9,7 +9,7 @@
 
 #endif // __linux__
 
-
+const int ICommand::LINELENGTH = 10000;
 
 ICommand::ICommand()
 {
@@ -24,8 +24,8 @@ const std::string ICommand::RESULT_LABEL = "result";
 
 void ICommand::getCallData(std::ifstream& log,std::string& numFrom,std::string& callId)
 {
-    const int linelength = 10000;
-    char buf[linelength];
+  
+    char buf[LINELENGTH];
     
     const std::string fromField = "From: ";
     const std::string callIdField = "Call-ID:";
@@ -34,7 +34,7 @@ void ICommand::getCallData(std::ifstream& log,std::string& numFrom,std::string& 
     const std::string callIdBegin = callIdField;
     const std::string callIdEnd = "@";
 
-    while (log.getline(buf, linelength))
+    while (log.getline(buf, LINELENGTH))
     {
 	    string datastr = buf;
 	    if (datastr.find(fromField) != string::npos)
@@ -75,52 +75,53 @@ std::string ICommand::getChannel(std::ifstream& log,std::string numFrom,std::str
     const std::string channelDomainSignature = "@";
     const std::string channelNameSignature = "[";
     
-    const int linelength = 10000;
+   
     std::string datastr = "";
-    char buf[linelength];
+    char buf[LINELENGTH];
     
-    while(log.getline(buf,linelength))
+    while(log.getline(buf, LINELENGTH))
     {
-	datastr = buf;
-	auto channelFullNamePosition = datastr.find(channelFullSignature);
-	if(channelFullNamePosition!=string::npos)
-	{
-	    auto channelNamePosition = datastr.find(channelNewSignature);
-	    string parseStr = datastr.substr(channelNamePosition);
+		datastr = buf;
+		auto channelFullNamePosition = datastr.find(channelFullSignature);
+		if(channelFullNamePosition!=string::npos)
+		{
+			auto channelNamePosition = datastr.find(channelNewSignature);
+			string parseStr = datastr.substr(channelNamePosition);
 	    
-	    auto channelSignaturePosition = parseStr.find(channelNameSignature);
-	    if(channelSignaturePosition!=string::npos)
-	    {
-		string channelSignature = parseStr.substr(channelSignaturePosition+1,parseStr.length()-channelSignaturePosition-2);
-		channelDescr = parseStr.substr(0,parseStr.length()-channelSignaturePosition-1);
-		std::cout<<" channelDescr "<<channelDescr<<"  "<<channelSignaturePosition<<"  "<<parseStr.length()<<"\n";
-		return channelSignature;
-	    }
-	}
+			auto channelSignaturePosition = parseStr.find(channelNameSignature);
+			if(channelSignaturePosition!=string::npos)
+			{
+			string channelSignature = parseStr.substr(channelSignaturePosition+1,parseStr.length()-channelSignaturePosition-2);
+			channelDescr = parseStr.substr(0,parseStr.length()-channelSignaturePosition-1);
+			std::cout<<" channelDescr "<<channelDescr<<"  "<<channelSignaturePosition<<"  "<<parseStr.length()<<"\n";
+			return channelSignature;
+			}
+		}
     }
+	return "unknown";
 }
 
 bool ICommand::getIncomeCallList(std::string login,vector<string>& list)
 {
 	ifstream log;
 	log.open(getLogFilename());
-	const int linelength = 10000;
+	
 	const std::string callBeginStrAny = "INVITE sip:";
 	const std::string callBeginStr = "INVITE sip:"+login;
 
-	char buf[linelength];
+	char buf[LINELENGTH];
 	std::cout<<"CallBeginStr = "<<callBeginStr<<"\n";
 	
-	while (log.getline(buf,linelength))
+	while (log.getline(buf, LINELENGTH))
 	{
 		string datastr = buf;
 		if ((checkSipPacketBegin(datastr))&&(checkSipIncomeCall(datastr)))
 		{
 			std::string callTime = getTimeFromPacketBegin(datastr);
 			std::cout<<datastr<<"\n";
-			log.getline(buf,linelength);
+			log.getline(buf, LINELENGTH);
 			
-			while (log.getline(buf,linelength))
+			while (log.getline(buf, LINELENGTH))
 			{
 			    string numFrom="";
 			    string callId="";
@@ -295,10 +296,9 @@ size_t ICommand::getCallLogPartial(string channel, string reqtimestr, vector<str
 	
 	std::cout<<"getCallLogPartial channel = "<<channel<<" reqtimestr = "<<reqtimestr<<"\n";
 	
-	const int linelength = 10000;
-	char buf[linelength];
+	char buf[LINELENGTH];
 
-	while (log.getline(buf, linelength))
+	while (log.getline(buf, LINELENGTH))
 	{
 		string datastr = buf;
 		
@@ -310,7 +310,7 @@ size_t ICommand::getCallLogPartial(string channel, string reqtimestr, vector<str
 		}
 
 	}
-	size_t curPosition = log.tellg();
+	size_t curPosition = static_cast<size_t>(log.tellg());
 	log.close();
 	return curPosition;
 
@@ -320,18 +320,11 @@ size_t ICommand::getCallLogPartial(string channel, size_t position, vector<strin
 {
 	ifstream log;
 	log.open(getLogFilename());
-	
-	const int linelength = 10000;
-	char buf[linelength];
-
 	log.seekg(position);
-	
-	string datastr = buf;
-	getCallPartial(channel,log,readdata);
 
+	getCallPartial(channel,log,readdata);
 	
-	
-	size_t curPosition = log.tellg();
+	size_t curPosition = static_cast<size_t>(log.tellg());
 	log.close();
 	return curPosition;
 
@@ -340,14 +333,14 @@ size_t ICommand::getCallLogPartial(string channel, size_t position, vector<strin
 void ICommand::getCallPartial(string channel,ifstream& log,vector<string>& readdata)
 {
     int readmode = 0;
-    const int linelength = 10000;
-    char buf[linelength];
+  
+    char buf[LINELENGTH];
 
     std::cout<<"Partial - search for call log\n";
     string datastr="";
     int i = 0;
     
-    while (log.getline(buf, linelength))
+    while (log.getline(buf, LINELENGTH))
     {
 	datastr = buf;
 	if(i++<10)
@@ -373,10 +366,9 @@ void ICommand::getCallLog(std::string channel, vector<string>& readdata)
 	ifstream log;
 	log.open(getLogFilename());
 
-	const int linelength = 10000;
-	char buf[linelength];
+	char buf[LINELENGTH];
 
-	while (log.getline(buf,linelength))
+	while (log.getline(buf,LINELENGTH))
 	{ 
 		string datastr = buf;
 
@@ -434,8 +426,51 @@ std::string ICommand::checkLineStatus(std::string statusCMD)
 int ICommand::setLogOnTime(ifstream& log, string reqtimestr)
 {
 	log.open(getLogFilename());
+	int setOK = 0;
 
-	std::string timestr = getTimeStr(reqtimestr);
+
+	boost::posix_time::ptime pt(boost::posix_time::time_from_string(reqtimestr));
+	int startposition = 0;
+	boost::posix_time::ptime firstpart(boost::posix_time::time_from_string(getNextTime(log)));
+
+	log.seekg(0, ios_base::end);
+	int endposition = static_cast<int>(log.tellg());
+
+	
+	boost::posix_time::ptime lastpart(boost::posix_time::time_from_string(getPrevTime(log)));
+
+	while ((lastpart > pt) && (pt > firstpart))
+	{
+		setOK = 1;
+
+		int mid = (endposition - startposition)/ 2;
+		log.seekg(mid, ios_base::beg);
+		boost::posix_time::ptime before(boost::posix_time::time_from_string(getPrevTime(log)));
+		boost::posix_time::ptime after(boost::posix_time::time_from_string(getNextTime(log)));
+
+		if ((before > pt) && (pt > firstpart))
+		{
+			endposition = mid;
+			lastpart = before;
+		}
+		else if ((lastpart > pt) && (pt > after))
+		{
+			startposition = mid;
+			firstpart = after;
+		}
+		else
+			break;
+	}
+
+	
+
+
+	
+	return setOK;
+
+
+
+/*	std::string timestr = getTimeStr(reqtimestr);
 	std::cout<<"THIS TIME STR "<<timestr<<"\n";
 	int i = 0;
 	if (log)
@@ -456,6 +491,7 @@ int ICommand::setLogOnTime(ifstream& log, string reqtimestr)
 		}
 		return 0;
 	}
+	*/
 }
 
 int ICommand::getLineLog(string login, string reqtimestr, std::vector<std::string>& pt)
@@ -464,9 +500,9 @@ int ICommand::getLineLog(string login, string reqtimestr, std::vector<std::strin
 		if (setLogOnTime(log, reqtimestr) == 0)
 			return 0;
 		
-		char data[10000];
+		char data[LINELENGTH];
 		std::string callTime="";
-		while (log.getline(data, 8096))
+		while (log.getline(data, LINELENGTH))
 		{
 			
 			if(checkSipPacketBegin(data))
@@ -517,12 +553,12 @@ int ICommand::getLineLog(string login, string reqtimestr, std::vector<std::strin
 int ICommand::SendSipPacket(std::ifstream& log, int sendcounter, std::vector<std::string>& pt)
 {
 
-	char packetdata[8096];
-	char data[8096];
-	log.getline(packetdata, 8096);
-	log.getline(packetdata, 8096);
+	char packetdata[LINELENGTH];
+	char data[LINELENGTH];
+	log.getline(packetdata, LINELENGTH);
+	log.getline(packetdata, LINELENGTH);
 	pt.push_back(packetdata);
-	while (log.getline(data, 8096))
+	while (log.getline(data, LINELENGTH))
 	{
 
 		std::cout<<"[ "<<data<<"]\n";
@@ -564,7 +600,7 @@ int ICommand::LineBackLog(std::ifstream& log)
 int ICommand::SetPositionToBeginSipHeader(std::ifstream& log, int& sendcounter)
 {
 	int i = 0;
-	char data[8096];
+	char data[LINELENGTH];
 	while (true)
 	{
 		++i;
@@ -575,7 +611,7 @@ int ICommand::SetPositionToBeginSipHeader(std::ifstream& log, int& sendcounter)
 			std::cout << "Error line back\n";
 			return 0;
 		}
-		log.getline(data, 8096);
+		log.getline(data, LINELENGTH);
 
 		if(this->checkSipPacketBegin(data))
 		{
@@ -603,4 +639,67 @@ std::string ICommand::getTimeStr(std::string requestTime)
 	std::tm tm  =  boost::posix_time::to_tm(pt);
 	std::cout<<"convert ptime to tm\n";
 	return formateDateTime(tm);
+}
+
+std::string ICommand::getPrevTime(ifstream& log)
+{
+	char buf[LINELENGTH];
+	boost::regex expression("(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}.\\d{2,6})");
+	boost::smatch what;
+	while (LineBackLog(log))
+	{
+		if (LineBackLog(log)&&(log.getline(buf, LINELENGTH)))
+		{
+			std::string logline = buf;
+			std::string parsedline;
+
+			if (getTimeFromLine(logline, parsedline))
+			{
+				/*std::string::const_iterator xItStart = parsedline.begin();
+				std::string::const_iterator xItEnd = parsedline.end();
+
+				if (boost::regex_search(xItStart, xItEnd, what, expression))
+				{
+
+					return what[1];
+				}*/
+				return parsedline;
+			}
+		}
+	}
+
+	return "01:01:01 1970-01-01";
+}
+std::string ICommand::getNextTime(ifstream& log)
+{
+	//2017-08-04 08:33:18.922637
+
+	char buf[LINELENGTH];
+	boost::regex expression("(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}.\\d{2,6})");
+	boost::smatch what;
+	while (log.getline(buf, LINELENGTH))
+	{
+		std::string logline = buf;
+		std::string parsedline;
+
+		if (getTimeFromLine(logline, parsedline))
+		{
+			std::string::const_iterator xItStart = parsedline.begin();
+			std::string::const_iterator xItEnd = parsedline.end();
+
+
+			if (boost::regex_search(xItStart, xItEnd, what, expression))
+			{
+
+				return what[1];
+			}
+
+		}
+		
+
+	
+
+	}
+
+	return "01:01:01 1970-01-01";
 }

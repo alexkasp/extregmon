@@ -78,14 +78,14 @@ namespace GUI
             
        
 
-      //  richTextBox.Document.Blocks.Add(new Paragraph(new Run(answer)));
+        richTextBox.Document.Blocks.Add(new Paragraph(new Run(answer)));
             
            
         }
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
-/*
+
             string command = cvm.fomratSelectedCmd(textBox1.Text,textBox2.Text);
             Paragraph myparagraph = new Paragraph();
             ExtregClient selected;
@@ -94,12 +94,12 @@ namespace GUI
           
             RunCommand(ref selected, ref myparagraph, command);
 
-            richTextBox.Document.Blocks.Add(myparagraph);*/
+            richTextBox.Document.Blocks.Add(myparagraph);
         }
 
         private void button2_Click(object sender, RoutedEventArgs e)
         {
-          //  richTextBox.Document.Blocks.Clear();
+            richTextBox.Document.Blocks.Clear();
         }
 
         private void textBox1_TextChanged(object sender, TextChangedEventArgs e)

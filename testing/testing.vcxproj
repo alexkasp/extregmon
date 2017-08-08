@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -72,6 +72,10 @@
     <IncludePath>\boost;$(IncludePath)</IncludePath>
     <LibraryPath>D:\boost\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>D:\boost_1_64_0;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <LibraryPath>D:\boost_1_64_0\stage\lib;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -79,9 +83,10 @@
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>D:\boost\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\boost_1_64_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AddModuleNamesToAssembly>D:\work\extregmon\extregmon\Debug\Server.obj;%(AddModuleNamesToAssembly)</AddModuleNamesToAssembly>
-      <AdditionalDependencies>D:\work\extregmon\extregmon\Debug\Server.obj;D:\work\extregmon\extregmon\Debug\ICommand.obj;D:\work\extregmon\extregmon\Debug\testCommand.obj;D:\work\extregmon\extregmon\Debug\asterCommand.obj;D:\work\extregmon\extregmon\Debug\asterCommand.obj;D:\work\extregmon\extregmon\Debug\ICommand.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>D:\work\extregmon\extregmon\Debug\Server.obj;D:\work\extregmon\extregmon\Debug\ICommand.obj;D:\work\extregmon\extregmon\Debug\testCommand.obj;D:\work\extregmon\extregmon\Debug\asterCommand.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -124,7 +129,7 @@
     <ClCompile Include="..\extregmon\Tests.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="testParam.xml" />
+    <Text Include="freeswitch.log" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
