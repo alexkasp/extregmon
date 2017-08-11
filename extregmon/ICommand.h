@@ -45,8 +45,8 @@ public:
 	int LineBackLog(std::ifstream& log);
 	std::string getPrevTime(ifstream& log);
 	std::string getNextTime(ifstream& log);
-	size_t getCallLogPartial(string channel, string reqtimestr, vector<string>& readdata, std::string logfilename);
-	size_t getCallLogPartial(string channel, size_t position, vector<string>& readdata, std::string logfilename);
+	size_t getCallLogPartial(string channel, string reqtimestr, vector<string>& readdata, std::ifstream& log);
+	size_t getCallLogPartial(string channel, size_t position, vector<string>& readdata, std::ifstream& log);
 
 	virtual std::string getStartSipLogCmd();
 	virtual std::string getLineStatusCMD(std::string login) = 0;

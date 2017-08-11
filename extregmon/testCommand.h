@@ -28,6 +28,6 @@ public:
 	virtual std::string getTimeFromPacketBegin(std::string);
 	virtual bool checkSipIncomeCall(std::string line);
 	virtual bool getTimeFromLine(std::string line, std::string& timestr);
-	virtual std::string reloadLineCMD(std::string, std::string userId);
+	virtual std::string reloadLineCMD(std::string login, std::string userId);
 };
 

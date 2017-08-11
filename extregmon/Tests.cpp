@@ -61,13 +61,25 @@ BOOST_AUTO_TEST_CASE(getNextDate_testCommand)
 BOOST_AUTO_TEST_CASE(getPartialLog)
 {
 	testCommand tc;
+	ifstream log("freeswitch.log");
 	std::vector<string> testout;
 
-	size_t beginposition = tc.getCallLogPartial("14c78b4a-78e2-11e7-8511-0177bd11a386", "2017-08-04 09:56:46",testout, "freeswitch.log");
+	size_t beginposition = tc.getCallLogPartial("14c78b4a-78e2-11e7-8511-0177bd11a386", "2017-08-04 09:56:46",testout, log);
 	BOOST_CHECK_EQUAL(testout.size(), 3);
 
-	tc.getCallLogPartial("14c78b4a-78e2-11e7-8511-0177bd11a386", beginposition, testout, "freeswitch.log");
+	beginposition = tc.getCallLogPartial("14c78b4a-78e2-11e7-8511-0177bd11a386", beginposition, testout, log);
 	
+	log.close();
+}
+
+BOOST_AUTO_TEST_CASE(reloadLineCMD)
+{
+	testCommand tc;
+	string login = "2000";
+	string userId = "2";
+
+	string answer = tc.reloadLineCMD(login, userId);
+	BOOST_CHECK_EQUAL(answer.compare("wget -O /dev/null --tries=1 --connect-timeout=2 \'http://extreg04.sipuni.com/IaEQvJmntW/refreshAll.php?userId=" + userId + "&lines={\"" + login + "\":[\"EDIT\"]}\'"), 0);
 }
 
 BOOST_AUTO_TEST_CASE(pause)
