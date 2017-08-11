@@ -39,6 +39,7 @@ BOOST_AUTO_TEST_CASE(getPrevDate_testCommand)
 	}
 	else
 		BOOST_ERROR("file not open!!!");
+	log.close();
 }
 
 BOOST_AUTO_TEST_CASE(getNextDate_testCommand)
@@ -53,6 +54,20 @@ BOOST_AUTO_TEST_CASE(getNextDate_testCommand)
 	}
 	else
 		BOOST_ERROR("file not open!!!");
+
+	log.close();
+}
+
+BOOST_AUTO_TEST_CASE(getPartialLog)
+{
+	testCommand tc;
+	std::vector<string> testout;
+
+	size_t beginposition = tc.getCallLogPartial("14c78b4a-78e2-11e7-8511-0177bd11a386", "2017-08-04 09:56:46",testout, "freeswitch.log");
+	BOOST_CHECK_EQUAL(testout.size(), 3);
+
+	tc.getCallLogPartial("14c78b4a-78e2-11e7-8511-0177bd11a386", beginposition, testout, "freeswitch.log");
+	
 }
 
 BOOST_AUTO_TEST_CASE(pause)

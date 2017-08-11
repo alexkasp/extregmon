@@ -43,6 +43,12 @@ bool testCommand::getTimeFromLine(std::string line, std::string& timestr)
 	return false;
 }
 
+std::string testCommand::reloadLineCMD(std::string login,std::string userId)
+{
+
+	return " wget -O /dev/null --tries=1 --connect-timeout=2 \'http://extreg04.sipuni.com/IaEQvJmntW/refreshAll.php?userId="+userId+"&lines={\""+login+"\":[\"EDIT\"]}\'";
+}
+
 std::string testCommand::getLineStatusCMD(std::string login)
 {
 	

@@ -23,6 +23,11 @@ std::string asterCommand::getTimeFromPacketBegin(std::string)
 	return "00:00:00 01/01/1970";
 }
 
+std::string asterCommand::reloadLineCMD(std::string, std::string userId)
+{
+	return "have to implement";
+}
+
 void asterCommand::scanErrorInLog(std::ifstream& log, std::string login, std::vector<string>& pt)
 {
 

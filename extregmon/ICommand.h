@@ -13,8 +13,8 @@ class ICommand
 	void getCallData(std::ifstream& log,std::string& numFrom,std::string& callId);
 	std::string getChannel(std::ifstream& log,std::string numFrom,std::string& channelDescr);
 	void getCallLog(std::string channel, vector<string>& readdata);
-	size_t getCallLogPartial(string channel, string reqtimestr, vector<string>& readdata);
-	size_t getCallLogPartial(string channel, size_t position, vector<string>& readdata);
+	
+	
 	void getCallPartial(string channel,ifstream& log,vector<string>& readdata);
 	
 public:
@@ -45,6 +45,8 @@ public:
 	int LineBackLog(std::ifstream& log);
 	std::string getPrevTime(ifstream& log);
 	std::string getNextTime(ifstream& log);
+	size_t getCallLogPartial(string channel, string reqtimestr, vector<string>& readdata, std::string logfilename);
+	size_t getCallLogPartial(string channel, size_t position, vector<string>& readdata, std::string logfilename);
 
 	virtual std::string getStartSipLogCmd();
 	virtual std::string getLineStatusCMD(std::string login) = 0;
@@ -58,6 +60,7 @@ public:
 	virtual void scanErrorInLog(std::ifstream& log, std::string login, std::vector<string>& pt) = 0;
 	virtual std::string getTimeFromPacketBegin(std::string) = 0;
 	virtual bool getTimeFromLine(std::string line,std::string& timestr) = 0;
+	virtual std::string reloadLineCMD(std::string, std::string userId) = 0;
 
 };
 

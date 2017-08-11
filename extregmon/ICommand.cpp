@@ -258,7 +258,7 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 				vector<string> readdata;
 
 				std::cout << "getCallLogPartial start\n";
-				size_t position = getCallLogPartial(channel,reqtimestr, readdata);
+				size_t position = getCallLogPartial(channel,reqtimestr, readdata, getLogFilename());
 
 				reportList(readdata, data, "NOT CALLS FOUND");
 				
@@ -273,14 +273,23 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 				vector<string> readdata;
 
 				std::cout << "getCallLogPartial start\n";
-				size_t newposition = getCallLogPartial(channel,position, readdata);
+				size_t newposition = getCallLogPartial(channel,position, readdata, getLogFilename());
 
 				reportList(readdata, data, "NOT CALLS FOUND");
 				
 				data.add(ICommand::RESULT_LABEL+".log",newposition);
 				return 1;
 			}
-
+			if (command.compare("lineReload") == 0)
+			{
+				string login = data.get<std::string>("LineSipLogLogin", "");
+				string userId = data.get<std::string>("RequestTime", 0);
+				string reloadCMD =reloadLineCMD(login,userId);
+				
+				string output = getConsoleOutput(reloadCMD);
+				data.put(ICommand::RESULT_LABEL + ".status", output);
+				return 1;
+			}
 		}
 	}
 	catch (std::exception &e)
@@ -289,37 +298,28 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 	}
 	return 0;
 }
-size_t ICommand::getCallLogPartial(string channel, string reqtimestr, vector<string>& readdata)
+size_t ICommand::getCallLogPartial(string channel, string reqtimestr, vector<string>& readdata,std::string logfilename)
 {
 	ifstream log;
-	log.open(getLogFilename());
+	log.open(logfilename);
 	
 	std::cout<<"getCallLogPartial channel = "<<channel<<" reqtimestr = "<<reqtimestr<<"\n";
 	
 	char buf[LINELENGTH];
-
-	while (log.getline(buf, LINELENGTH))
-	{
-		string datastr = buf;
-		
-		if (datastr.find(reqtimestr) != string::npos)
-		{
-			LineBackLog(log);
-			getCallPartial(channel,log,readdata);
-			break;
-		}
-
-	}
+	setLogOnTime(log, reqtimestr);
+	
+	getCallPartial(channel,log,readdata);
+	
 	size_t curPosition = static_cast<size_t>(log.tellg());
 	log.close();
 	return curPosition;
 
 }
 
-size_t ICommand::getCallLogPartial(string channel, size_t position, vector<string>& readdata)
+size_t ICommand::getCallLogPartial(string channel, size_t position, vector<string>& readdata, std::string logfilename)
 {
 	ifstream log;
-	log.open(getLogFilename());
+	log.open(logfilename);
 	log.seekg(position);
 
 	getCallPartial(channel,log,readdata);
@@ -342,19 +342,19 @@ void ICommand::getCallPartial(string channel,ifstream& log,vector<string>& readd
     
     while (log.getline(buf, LINELENGTH))
     {
-	datastr = buf;
-	if(i++<10)
-	    std::cout<<datastr<<"\n";
+		datastr = buf;
+		if(i++<10)
+			std::cout<<datastr<<"\n";
 	
-	if (datastr.find(channel) != string::npos)
-	{
-	    if(i++<10)
-			std::cout<<"["<<datastr<<"]\n";
-	    readmode = 1;
-	    readdata.push_back(datastr);
-	}
-	else if (readmode)
-	    break;
+		if (datastr.find(channel) != string::npos)
+		{
+			if(i++<10)
+				std::cout<<"["<<datastr<<"]\n";
+			readmode = 1;
+			readdata.push_back(datastr);
+		}
+		else if (readmode)
+			break;
 
 	}
 	
