@@ -286,8 +286,13 @@ int ICommand::RunParse(boost::property_tree::ptree& data)
 			if (command.compare("lineReload") == 0)
 			{
 				string login = data.get<std::string>("LineSipLogLogin", "");
-				string userId = data.get<std::string>("RequestTime", 0);
+				string userId = data.get<std::string>("RequestTime", "");
+				
+				std::cout<<"LineReload "<<login<<" "<<userId<<"\n";
+				
 				string reloadCMD =reloadLineCMD(login,userId);
+				
+				std::cout<<"Prepared cmd = "<<reloadCMD<<"\n";
 				
 				string output = getConsoleOutput(reloadCMD);
 				data.put(ICommand::RESULT_LABEL + ".status", output);
